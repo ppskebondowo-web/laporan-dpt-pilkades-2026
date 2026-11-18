@@ -3,85 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Data Pemilih - Pilkades Kebondowo 2026</title>
-    <script src="https://tailwindcss.com"></script>
-    <link href="https://googleapis.com" rel="stylesheet">
+    <title>Laporan Perkembangan Data Pemilih - Pilkades 2026</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://cloudflare.com"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        :root {
+            --bg-main: #090d16;
+            --bg-card: #111827;
+            --bg-card-hover: #1a2438;
+            --border-color: #1f2937;
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --accent-emerald: #10b981;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.08), transparent 25%);
+            min-height: 100vh;
+        }
+        .container { max-width: 1360px; margin: 0 auto; padding: 2rem 1.5rem; }
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .badge-header {
+            display: inline-block;
+            padding: 0.35rem 1rem;
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: var(--accent-cyan);
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        header p { color: var(--text-secondary); margin-top: 0.5rem; font-size: 1rem; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .stat-card:hover { transform: translateY(-2px); border-color: rgba(6, 182, 212, 0.4); }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+        .stat-dpt::before { background: var(--accent-cyan); }
+        .stat-baru::before { background: var(--accent-emerald); }
+        .stat-tms::before { background: var(--accent-rose); }
+        .stat-title { font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 2.25rem; font-weight: 700; margin-top: 0.25rem; color: var(--text-primary); }
+        .stat-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .controls-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.25rem;
+        }
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.65rem 1.25rem;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tab-btn:hover { background: rgba(255, 255, 255, 0.07); color: var(--text-primary); }
+        .tab-btn.active[data-tab="dpt"] { background: rgba(6, 182, 212, 0.15); border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .tab-btn.active[data-tab="baru"] { background: rgba(16, 185, 129, 0.15); border-color: var(--accent-emerald); color: var(--accent-emerald); }
+        .tab-btn.active[data-tab="tms"] { background: rgba(244, 63, 94, 0.15); border-color: var(--accent-rose); color: var(--accent-rose); }
+        .search-filter-bar { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
+        @media (max-width: 768px) { .search-filter-bar { grid-template-columns: 1fr; } }
+        .input-group input, .input-group select {
+            width: 100%;
+            background: #090d16;
+            border: 1px solid #334155;
+            color: var(--text-primary);
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus, .input-group select:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15); }
+        .result-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 1.25rem; }
+        .voter-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.35rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        .voter-card:hover { background: var(--bg-card-hover); border-color: #334155; transform: translateY(-2px); }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+        .voter-name { font-size: 1.125rem; font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+        .tps-badge {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #60a5fa;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.25rem 0.65rem;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+        .card-body { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.92rem; }
+        .info-row { display: flex; justify-content: space-between; gap: 1rem; }
+        .info-label { color: var(--text-secondary); font-weight: 500; min-width: 105px; }
+        .info-value { color: var(--text-primary); font-weight: 500; text-align: right; word-break: break-word; }
+        .mono-text { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.03em; color: #e2e8f0; }
+        .tms-reason {
+            margin-top: 0.4rem;
+            padding: 0.65rem 0.85rem;
+            background: rgba(244, 63, 94, 0.1);
+            border-left: 3px solid var(--accent-rose);
+            border-radius: 6px;
+            font-size: 0.88rem;
+            color: #fda4af;
+        }
+        .load-more-container { text-align: center; margin-top: 2.5rem; }
+        .btn-load-more {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: #ffffff;
+            border: none;
+            padding: 0.85rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-load-more:hover { opacity: 0.9; }
+        .status-message {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+            grid-column: 1 / -1;
+            background: var(--bg-card);
+            border-radius: 14px;
+            border: 1px dashed var(--border-color);
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
-
-    <!-- Header Modern dengan Gradasi -->
-    <header class="bg-gradient-to-r from-indigo-900 via-slate-900 to-emerald-900 border-b border-slate-700/80 shadow-xl">
-        <div class="container mx-auto px-4 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div>
-                <span class="inline-block px-3 py-1 text-xs font-bold tracking-wider uppercase rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-2">
-                    Sistem Informasi Pemutakhiran Data
-                </span>
-                <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight text-white">
-                    Perkembangan Daftar Pemilih
-                </h1>
-                <p class="text-slate-300 mt-1 text-sm md:text-base">
-                    Pemilihan Kepala Desa Kebondowo Tahun 2026 &bull; Kecamatan Banyubiru
-                </p>
-            </div>
-            <div class="bg-slate-800/70 backdrop-blur border border-slate-700 px-4 py-3 rounded-xl text-right">
-                <p class="text-xs text-slate-400 uppercase font-semibold">Cakupan Wilayah</p>
-                <p class="text-lg font-bold text-emerald-400">11 TPS Aktif</p>
-            </div>
-        </div>
+<body>
+<div class="container">
+    <header>
+        <span class="badge-header">Sistem Informasi Pemutakhiran Data</span>
+        <h1>Laporan Perkembangan Pemilih Pilkades 2026</h1>
+        <p>Transparansi Data Pemilih Tetap (DPT), Usulan Pemilih Baru, dan Pemilih Tidak Memenuhi Syarat (TMS)</p>
     </header>
 
-    <main class="container mx-auto px-4 py-8 flex-grow">
-        <!-- Kartu Rekapitulasi Berwarna -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-            <div class="bg-gradient-to-br from-slate-800 to-slate-800/60 p-6 rounded-2xl border border-slate-700/80 shadow-lg relative overflow-hidden">
-                <div class="absolute -right-4 -top-4 w-20 h-20 bg-purple-500/10 rounded-full blur-xl"></div>
-                <p class="text-xs font-bold uppercase tracking-wider text-purple-400">Total DPS Awal</p>
-                <p class="text-3xl font-extrabold text-white mt-2">4.915</p>
-                <p class="text-xs text-slate-400 mt-2">Laki-laki: <span class="text-slate-200 font-semibold">2.296</span> &bull; Perempuan: <span class="text-slate-200 font-semibold">2.619</span></p>
-            </div>
-
-            <div class="bg-gradient-to-br from-slate-800 to-slate-800/60 p-6 rounded-2xl border border-rose-500/30 shadow-lg relative overflow-hidden">
-                <div class="absolute -right-4 -top-4 w-20 h-20 bg-rose-500/10 rounded-full blur-xl"></div>
-                <p class="text-xs font-bold uppercase tracking-wider text-rose-400">Pemilih TMS</p>
-                <p class="text-3xl font-extrabold text-rose-400 mt-2">2</p>
-                <p class="text-xs text-slate-400 mt-2">Laki-laki: <span class="text-slate-200 font-semibold">1</span> &bull; Perempuan: <span class="text-slate-200 font-semibold">1</span></p>
-            </div>
-
-            <div class="bg-gradient-to-br from-slate-800 to-slate-800/60 p-6 rounded-2xl border border-cyan-500/30 shadow-lg relative overflow-hidden">
-                <div class="absolute -right-4 -top-4 w-20 h-20 bg-cyan-500/10 rounded-full blur-xl"></div>
-                <p class="text-xs font-bold uppercase tracking-wider text-cyan-400">Pemilih Baru (Usulan)</p>
-                <p class="text-3xl font-extrabold text-cyan-400 mt-2">23</p>
-                <p class="text-xs text-slate-400 mt-2">Laki-laki: <span class="text-slate-200 font-semibold">11</span> &bull; Perempuan: <span class="text-slate-200 font-semibold">12</span></p>
-            </div>
-
-            <div class="bg-gradient-to-br from-emerald-900/50 to-slate-800 p-6 rounded-2xl border border-emerald-500/40 shadow-lg relative overflow-hidden">
-                <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-500/20 rounded-full blur-xl"></div>
-                <p class="text-xs font-bold uppercase tracking-wider text-emerald-400">Total DPT Akhir</p>
-                <p class="text-3xl font-extrabold text-emerald-300 mt-2">4.936</p>
-                <p class="text-xs text-slate-300 mt-2">Laki-laki: <span class="text-white font-semibold">2.306</span> &bull; Perempuan: <span class="text-white font-semibold">2.630</span></p>
-            </div>
+    <section class="stats-grid">
+        <div class="stat-card stat-dpt">
+            <div class="stat-title">Total Pemilih DPT</div>
+            <div class="stat-value" id="count-dpt">0</div>
+            <div class="stat-desc">Tersebar di TPS 001 s.d. TPS 011</div>
         </div>
-
-        <!-- Navigasi Tab Pil Modern -->
-        <div class="bg-slate-800/80 p-1.5 rounded-xl border border-slate-700 inline-flex flex-wrap gap-1.5 mb-6">
-            <button onclick="switchTab('dpt')" id="tab-dpt" class="tab-btn px-5 py-2.5 text-sm font-bold rounded-lg transition-all bg-indigo-600 text-white shadow">
-                Daftar Pemilih Tetap (DPT)
-            </button>
-            <button onclick="switchTab('tms')" id="tab-tms" class="tab-btn px-5 py-2.5 text-sm font-bold rounded-lg transition-all text-slate-300 hover:bg-slate-700/70">
-                Pemilih TMS (Lengkap)
-            </button>
-            <button onclick="switchTab('baru')" id="tab-baru" class="tab-btn px-5 py-2.5 text-sm font-bold rounded-lg transition-all text-slate-300 hover:bg-slate-700/70">
-                Pemilih Baru (Usulan)
-            </button>
-        </div>
-function switchTab(tab) {
-    currentTab = tab; currentPage = 1;
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.className = 'tab-btn px-5 py-2.5 text-sm font-bold rounded-lg transition-all text-slate-300 hover:bg-slate-700/70';
-    });
-    document.getElementById(`tab-${tab}`).className = 'tab-btn px-5 py-2.5 text-sm font-bold rounded-lg transition-all bg-indigo-600 text-white shadow';
-    renderTable();
-}
+        <div class="stat-card stat-baru">
+            <div class="stat-title">Pemilih Baru (Usulan Masyarakat)</div>
+            <div class="stat-value" id="count-baru">0</div>
