@@ -77,3 +77,11 @@
                 Pemilih Baru (Usulan)
             </button>
         </div>
+function switchTab(tab) {
+    currentTab = tab; currentPage = 1;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = 'tab-btn px-5 py-2.5 text-sm font-bold rounded-lg transition-all text-slate-300 hover:bg-slate-700/70';
+    });
+    document.getElementById(`tab-${tab}`).className = 'tab-btn px-5 py-2.5 text-sm font-bold rounded-lg transition-all bg-indigo-600 text-white shadow';
+    renderTable();
+}
