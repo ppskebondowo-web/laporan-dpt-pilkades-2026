@@ -249,39 +249,44 @@
             }));
         });
 
-        const [tpsRes, rawBaru, rawTms] = await Promise.all([
-            Promise.all(tpsPromises),
-            fetchCSVSmart(['data_baru.csv', 'DATA_BARU.csv']),
-            fetchCSVSmart(['data_tms.csv', 'DATA_TMS.csv'])
-        ]);
         state.dpt = tpsRes.flat().filter(x => x.nama !== '');
-        state.baru = rawBaru.map(r => ({
+
+        const rawBaruAlt = rawBaru.length ? rawBaru : await fetchCSVSmart(['data baru.csv', 'Data_Baru.csv', 'Data Baru.csv']);
+        const rawTmsAlt = rawTms.length ? rawTms : await fetchCSVSmart(['data tms.csv', 'Data_Tms.csv', 'Data Tms.csv']);
+
+        state.baru = rawBaruAlt.map(r => ({
             nama: getCol(r, ['nama']),
-            jk: formatJK(getCol(r, ['jenis_kelamin', 'jnsklmn', 'jk'])),
+            jk: formatJK(getCol(r, ['jenis_kelamin', 'jenis kelamin', 'jnsklmn', 'jk'])),
             umur: getCol(r, ['umur', 'usia']) || '-',
             alamat: getCol(r, ['alamat']) || '-',
             tps: normalizeTPS(getCol(r, ['tps']))
         })).filter(x => x.nama !== '');
 
-        state.tms = rawTms.map(r => ({
+        state.tms = rawTmsAlt.map(r => ({
             no: getCol(r, ['no']) || '-',
             nkk: getCol(r, ['nkk']) || '-',
             nik: getCol(r, ['nik']) || '-',
             nama: getCol(r, ['nama']),
-            jk: formatJK(getCol(r, ['jenis_kelamin', 'jnsklmn', 'jk'])),
+            jk: formatJK(getCol(r, ['jenis_kelamin', 'jenis kelamin', 'jnsklmn', 'jk'])),
             umur: getCol(r, ['umur', 'usia']) || '-',
             alamat: getCol(r, ['alamat']) || '-',
             tps: normalizeTPS(getCol(r, ['tps'])),
-            keterangan: getCol(r, ['keterangan_tms', 'keterangan']) || '-'
+            keterangan: getCol(r, ['keterangan_tms', 'keterangan tms', 'keterangan']) || '-'
         })).filter(x => x.nama !== '');
 
-        const sDps = countGender(state.dpt), sTms = countGender(state.tms), sBaru = countGender(state.baru);
+        const sDps = countGender(state.dpt);
+        const sTms = countGender(state.tms);
+        const sBaru = countGender(state.baru);
+
         document.getElementById('count-dps').textContent = sDps.total.toLocaleString('id-ID');
         document.getElementById('gender-dps').textContent = `Laki-laki: ${sDps.l.toLocaleString('id-ID')} • Perempuan: ${sDps.p.toLocaleString('id-ID')}`;
+
         document.getElementById('count-tms').textContent = sTms.total.toLocaleString('id-ID');
         document.getElementById('gender-tms').textContent = `Laki-laki: ${sTms.l.toLocaleString('id-ID')} • Perempuan: ${sTms.p.toLocaleString('id-ID')}`;
+
         document.getElementById('count-baru').textContent = sBaru.total.toLocaleString('id-ID');
         document.getElementById('gender-baru').textContent = `Laki-laki: ${sBaru.l.toLocaleString('id-ID')} • Perempuan: ${sBaru.p.toLocaleString('id-ID')}`;
+
         document.getElementById('count-dpt-akhir').textContent = (sDps.total - sTms.total + sBaru.total).toLocaleString('id-ID');
         document.getElementById('gender-dpt-akhir').textContent = `Laki-laki: ${(sDps.l - sTms.l + sBaru.l).toLocaleString('id-ID')} • Perempuan: ${(sDps.p - sTms.p + sBaru.p).toLocaleString('id-ID')}`;
 
@@ -289,7 +294,8 @@
     }
 
     function switchTab(tab) {
-        state.activeTab = tab; state.displayLimit = 30;
+        state.activeTab = tab;
+        state.displayLimit = 30;
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById('tab-' + tab).classList.add('active');
         handleFilter();
@@ -311,9 +317,7 @@
         const visible = state.filteredData.slice(0, state.displayLimit);
         document.getElementById('resultSummary').textContent = `Menampilkan ${visible.length.toLocaleString('id-ID')} dari ${total.toLocaleString('id-ID')} data pemilih`;
         if (total === 0) {
-            const protoWarn = location.protocol === 'file:' ? '<br><strong style="color:#fbbf24">Peringatan: Buka melalui link GitHub Pages (https://...), bukan dari file lokal komputer.</strong>' : '';
-            const errInfo = state.logs.length > 0 ? `<br><small style="color:#fda4af">File tidak ditemukan: ${state.logs.join(', ')}</small>` : '';
-            container.innerHTML = `<div class="status-message">Tidak ada data pemilih yang tampil.${protoWarn}${errInfo}</div>`;
+            container.innerHTML = `<div class="status-message">Tidak ada data pemilih pada kategori ini.</div>`;
             document.getElementById('loadMoreContainer').style.display = 'none';
             return;
         }
@@ -340,5 +344,6 @@
 </script>
 </body>
 </html>
+
 
 
