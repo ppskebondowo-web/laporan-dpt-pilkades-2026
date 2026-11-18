@@ -171,32 +171,47 @@
     </div>
 </div>
 
-
 <script>
-    const state = { dpt: [], baru: [], tms: [], activeTab: 'dpt', filteredData: [], displayLimit: 30, errors: [] };
+    const state = { dpt: [], baru: [], tms: [], activeTab: 'dpt', filteredData: [], displayLimit: 30, logs: [] };
 
-    function fetchCSV(url) {
-        return new Promise((resolve) => {
-            Papa.parse(encodeURI(url), {
-                download: true, header: true, skipEmptyLines: true,
-                transformHeader: (h) => h.replace(/^\uFEFF/, '').trim().toLowerCase(),
-                complete: (res) => resolve(res.data || []),
-                error: () => { state.errors.push(url); resolve([]); }
-            });
+    function parseCSVText(text) {
+        const cleanText = text.replace(/^\uFEFF/, '');
+        const lines = cleanText.split(/\r?\n/).filter(l => l.trim() !== '');
+        if (lines.length < 2) return [];
+        const sep = lines[0].includes(';') ? ';' : ',';
+        const headers = lines[0].split(sep).map(h => h.trim().toLowerCase());
+        return lines.slice(1).map(line => {
+            const cols = line.split(sep);
+            const obj = {};
+            headers.forEach((h, idx) => { obj[h] = (cols[idx] || '').trim(); });
+            return obj;
         });
+    }
+
+    async function fetchCSVSmart(candidates) {
+        for (const file of candidates) {
+            try {
+                const res = await fetch(encodeURI(file) + '?v=' + Date.now());
+                if (res.ok) {
+                    const txt = await res.text();
+                    const parsed = parseCSVText(txt);
+                    if (parsed.length > 0) return parsed;
+                }
+            } catch (e) {}
+        }
+        state.logs.push(candidates[0]);
+        return [];
     }
 
     function getCol(row, keys) {
         for (let k of keys) {
-            if (row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== '') {
-                return String(row[k]).trim();
-            }
+            if (row[k] !== undefined && row[k] !== '') return row[k];
         }
         return '';
     }
 
     function formatJK(raw) {
-        const g = (raw || '').trim().toUpperCase();
+        const g = (raw || '').toUpperCase();
         if (g === 'L' || g.startsWith('LAKI')) return 'Laki-laki';
         if (g === 'P' || g.startsWith('PEREMPUAN')) return 'Perempuan';
         return raw || '-';
@@ -204,9 +219,8 @@
 
     function normalizeTPS(rawTps) {
         if (!rawTps) return "Tidak Diketahui";
-        const clean = rawTps.toString().trim().toUpperCase();
-        const numMatch = clean.match(/\d+/);
-        return numMatch ? "TPS " + numMatch.padStart(3, '0') : clean;
+        const numMatch = String(rawTps).match(/\d+/);
+        return numMatch ? "TPS " + numMatch.padStart(3, '0') : rawTps.toUpperCase();
     }
 
     function countGender(list) {
@@ -219,9 +233,10 @@
     }
 
     async function initApp() {
+        document.getElementById('resultSummary').textContent = "Sedang membaca file CSV...";
         const tpsNums = ['001','002','003','004','005','006','007','008','009','010','011'];
         const tpsPromises = tpsNums.map(async (num) => {
-            const rows = await fetchCSV("TPS " + num + ".csv");
+            const rows = await fetchCSVSmart([`TPS ${num}.csv`, `tps ${num}.csv`, `TPS_${num}.csv`, `TPS${num}.csv`]);
             return rows.map(r => ({
                 id: getCol(r, ['id']) || '-',
                 nama: getCol(r, ['nama']),
@@ -233,9 +248,10 @@
         });
 
         const [tpsRes, rawBaru, rawTms] = await Promise.all([
-            Promise.all(tpsPromises), fetchCSV('data_baru.csv'), fetchCSV('data_tms.csv')
+            Promise.all(tpsPromises),
+            fetchCSVSmart(['data_baru.csv', 'DATA_BARU.csv']),
+            fetchCSVSmart(['data_tms.csv', 'DATA_TMS.csv'])
         ]);
-
         state.dpt = tpsRes.flat().filter(x => x.nama !== '');
         state.baru = rawBaru.map(r => ({
             nama: getCol(r, ['nama']),
@@ -259,13 +275,13 @@
 
         const sDps = countGender(state.dpt), sTms = countGender(state.tms), sBaru = countGender(state.baru);
         document.getElementById('count-dps').textContent = sDps.total.toLocaleString('id-ID');
-        document.getElementById('gender-dps').textContent = "Laki-laki: " + sDps.l.toLocaleString('id-ID') + " • Perempuan: " + sDps.p.toLocaleString('id-ID');
+        document.getElementById('gender-dps').textContent = `Laki-laki: ${sDps.l.toLocaleString('id-ID')} • Perempuan: ${sDps.p.toLocaleString('id-ID')}`;
         document.getElementById('count-tms').textContent = sTms.total.toLocaleString('id-ID');
-        document.getElementById('gender-tms').textContent = "Laki-laki: " + sTms.l.toLocaleString('id-ID') + " • Perempuan: " + sTms.p.toLocaleString('id-ID');
+        document.getElementById('gender-tms').textContent = `Laki-laki: ${sTms.l.toLocaleString('id-ID')} • Perempuan: ${sTms.p.toLocaleString('id-ID')}`;
         document.getElementById('count-baru').textContent = sBaru.total.toLocaleString('id-ID');
-        document.getElementById('gender-baru').textContent = "Laki-laki: " + sBaru.l.toLocaleString('id-ID') + " • Perempuan: " + sBaru.p.toLocaleString('id-ID');
+        document.getElementById('gender-baru').textContent = `Laki-laki: ${sBaru.l.toLocaleString('id-ID')} • Perempuan: ${sBaru.p.toLocaleString('id-ID')}`;
         document.getElementById('count-dpt-akhir').textContent = (sDps.total - sTms.total + sBaru.total).toLocaleString('id-ID');
-        document.getElementById('gender-dpt-akhir').textContent = "Laki-laki: " + (sDps.l - sTms.l + sBaru.l).toLocaleString('id-ID') + " • Perempuan: " + (sDps.p - sTms.p + sBaru.p).toLocaleString('id-ID');
+        document.getElementById('gender-dpt-akhir').textContent = `Laki-laki: ${(sDps.l - sTms.l + sBaru.l).toLocaleString('id-ID')} • Perempuan: ${(sDps.p - sTms.p + sBaru.p).toLocaleString('id-ID')}`;
 
         handleFilter();
     }
@@ -291,10 +307,11 @@
         const container = document.getElementById('cardsContainer');
         const total = state.filteredData.length;
         const visible = state.filteredData.slice(0, state.displayLimit);
-        document.getElementById('resultSummary').textContent = "Menampilkan " + visible.length.toLocaleString('id-ID') + " dari " + total.toLocaleString('id-ID') + " data pemilih";
+        document.getElementById('resultSummary').textContent = `Menampilkan ${visible.length.toLocaleString('id-ID')} dari ${total.toLocaleString('id-ID')} data pemilih`;
         if (total === 0) {
-            const errInfo = state.errors.length > 0 ? "<br><small style='color:#fda4af'>File gagal dimuat: " + state.errors.join(', ') + "</small>" : "";
-            container.innerHTML = '<div class="status-message">Tidak ada data pemilih yang cocok.' + errInfo + '</div>';
+            const protoWarn = location.protocol === 'file:' ? '<br><strong style="color:#fbbf24">Peringatan: Buka melalui link GitHub Pages (https://...), bukan dari file lokal komputer.</strong>' : '';
+            const errInfo = state.logs.length > 0 ? `<br><small style="color:#fda4af">File tidak ditemukan: ${state.logs.join(', ')}</small>` : '';
+            container.innerHTML = `<div class="status-message">Tidak ada data pemilih yang tampil.${protoWarn}${errInfo}</div>`;
             document.getElementById('loadMoreContainer').style.display = 'none';
             return;
         }
@@ -303,28 +320,14 @@
     }
 
     function createCardHTML(item, type) {
+        const hdr = `<div class="card-header"><h2 class="voter-name">${esc(item.nama)}</h2><span class="tps-badge">${esc(item.tps)}</span></div><div class="card-body">`;
+        const row = (lbl, val, cls = '') => `<div class="info-row"><span class="info-label">${lbl}</span><span class="info-value ${cls}">${esc(val)}</span></div>`;
         if (type === 'tms') {
-            return '<article class="voter-card"><div class="card-header"><h2 class="voter-name">' + esc(item.nama) + '</h2><span class="tps-badge">' + esc(item.tps) + '</span></div><div class="card-body">' +
-                '<div class="info-row"><span class="info-label">No. Urut</span><span class="info-value">' + esc(item.no) + '</span></div>' +
-                '<div class="info-row"><span class="info-label">NKK</span><span class="info-value mono-text">' + esc(item.nkk) + '</span></div>' +
-                '<div class="info-row"><span class="info-label">NIK</span><span class="info-value mono-text">' + esc(item.nik) + '</span></div>' +
-                '<div class="info-row"><span class="info-label">Jenis Kelamin</span><span class="info-value">' + esc(item.jk) + '</span></div>' +
-                '<div class="info-row"><span class="info-label">Umur</span><span class="info-value">' + esc(item.umur) + ' Tahun</span></div>' +
-                '<div class="info-row"><span class="info-label">Alamat</span><span class="info-value">' + esc(item.alamat) + '</span></div>' +
-                '<div class="tms-reason"><strong>Status TMS:</strong> ' + esc(item.keterangan) + '</div></div></article>';
+            return `<article class="voter-card">${hdr}${row('No. Urut', item.no)}${row('NKK', item.nkk, 'mono-text')}${row('NIK', item.nik, 'mono-text')}${row('Jenis Kelamin', item.jk)}${row('Umur', item.umur + ' Tahun')}${row('Alamat', item.alamat)}<div class="tms-reason"><strong>Status TMS:</strong> ${esc(item.keterangan)}</div></div></article>`;
         } else if (type === 'baru') {
-            return '<article class="voter-card"><div class="card-header"><h2 class="voter-name">' + esc(item.nama) + '</h2><span class="tps-badge">' + esc(item.tps) + '</span></div><div class="card-body">' +
-                '<div class="info-row"><span class="info-label">Jenis Kelamin</span><span class="info-value">' + esc(item.jk) + '</span></div>' +
-                '<div class="info-row"><span class="info-label">Umur</span><span class="info-value">' + esc(item.umur) + ' Tahun</span></div>' +
-                '<div class="info-row"><span class="info-label">Alamat</span><span class="info-value">' + esc(item.alamat) + '</span></div>' +
-                '<div class="info-row"><span class="info-label">TPS Dituju</span><span class="info-value" style="color:var(--accent-emerald);font-weight:600;">' + esc(item.tps) + '</span></div></div></article>';
-        } else {
-            return '<article class="voter-card"><div class="card-header"><h2 class="voter-name">' + esc(item.nama) + '</h2><span class="tps-badge">' + esc(item.tps) + '</span></div><div class="card-body">' +
-                '<div class="info-row"><span class="info-label">ID Pemilih</span><span class="info-value mono-text">' + esc(item.id) + '</span></div>' +
-                '<div class="info-row"><span class="info-label">Jenis Kelamin</span><span class="info-value">' + esc(item.jk) + '</span></div>' +
-                '<div class="info-row"><span class="info-label">Usia</span><span class="info-value">' + esc(item.usia) + ' Tahun</span></div>' +
-                '<div class="info-row"><span class="info-label">Alamat</span><span class="info-value">' + esc(item.alamat) + '</span></div></div></article>';
+            return `<article class="voter-card">${hdr}${row('Jenis Kelamin', item.jk)}${row('Umur', item.umur + ' Tahun')}${row('Alamat', item.alamat)}<div class="info-row"><span class="info-label">TPS Dituju</span><span class="info-value" style="color:var(--accent-emerald);font-weight:600;">${esc(item.tps)}</span></div></div></article>`;
         }
+        return `<article class="voter-card">${hdr}${row('ID Pemilih', item.id, 'mono-text')}${row('Jenis Kelamin', item.jk)}${row('Usia', item.usia + ' Tahun')}${row('Alamat', item.alamat)}</div></article>`;
     }
 
     function esc(str) {
@@ -335,4 +338,5 @@
 </script>
 </body>
 </html>
+
 
