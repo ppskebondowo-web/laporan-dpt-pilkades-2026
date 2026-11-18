@@ -14,7 +14,7 @@ header{text-align:center;margin-bottom:2.25rem;padding-bottom:1.5rem;border-bott
 .badge{display:inline-block;padding:.35rem 1rem;background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.3);color:var(--cyan);border-radius:99px;font-size:.78rem;font-weight:600;text-transform:uppercase;margin-bottom:.65rem;letter-spacing:.05em}
 h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.85rem,4vw,2.6rem);font-weight:700}
 header p{color:var(--t2);margin-top:.4rem;font-size:1.05rem}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:1.25rem;margin-bottom:2rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:1.25rem;margin-bottom:1.75rem}
 .scard{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:1.85rem 1.5rem;min-height:230px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;transition:all .2s ease}
 .scard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
 .s1::before{background:var(--blue)}.s2::before{background:var(--cyan)}.s3::before{background:var(--rose)}.s4::before{background:var(--emerald)}.s5::before{background:var(--indigo)}
@@ -25,6 +25,24 @@ header p{color:var(--t2);margin-top:.4rem;font-size:1.05rem}
 .scard.clickable:hover .icon-search{background:var(--indigo);color:#fff}
 .sval{font-family:'Space Grotesk',sans-serif;font-size:2.35rem;font-weight:700;margin:.75rem 0}
 .sdesc{font-size:.9rem;color:var(--t2);line-height:1.65;border-top:1px solid var(--line);padding-top:.85rem}
+.charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;margin-bottom:2rem}
+@media(max-width:900px){.charts-grid{grid-template-columns:1fr}}
+.chart-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.5rem}
+.chart-hdr{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem;border-bottom:1px solid var(--line);padding-bottom:.75rem}
+.chart-hdr h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700}
+.legend{display:flex;gap:1rem;font-size:.82rem;color:var(--t2)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:.35rem}
+.bar-list{display:flex;flex-direction:column;gap:.75rem}
+.bar-row{display:grid;grid-template-columns:72px 1fr 65px;align-items:center;gap:.75rem;font-size:.85rem;padding:.25rem .4rem;border-radius:8px;transition:.15s}
+.bar-row:hover{background:rgba(255,255,255,.04)}
+.bar-lbl{font-weight:700;color:var(--t1)}
+.bar-track{height:14px;background:var(--bg);border-radius:7px;overflow:hidden;display:flex}
+.bar-l{background:linear-gradient(90deg,#3b82f6,#06b6d4);height:100%;transition:width .5s}
+.bar-p{background:linear-gradient(90deg,#ec4899,#f43f5e);height:100%;transition:width .5s}
+.bar-val{text-align:right;font-weight:600;color:var(--t2)}
+.donut-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;padding-top:.5rem}
+.donut-info{width:100%;display:flex;flex-direction:column;gap:.65rem;font-size:.88rem}
+.d-item{display:flex;justify-content:space-between;padding:.6rem .85rem;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
 .view-bar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.15rem 1.35rem;margin-bottom:1.5rem;display:none;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .view-info h2{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700}
 .view-info p{font-size:.88rem;color:var(--t2);margin-top:.15rem}
@@ -66,23 +84,6 @@ header p{color:var(--t2);margin-top:.4rem;font-size:1.05rem}
 .more button{background:linear-gradient(135deg,var(--indigo),var(--blue));color:#fff;border:none;padding:.8rem 1.8rem;border-radius:10px;font-weight:600;cursor:pointer}
 .empty{text-align:center;padding:2.5rem 1rem;color:var(--t2);grid-column:1/-1;background:var(--card);border-radius:14px;border:1px dashed var(--line)}
 footer{text-align:center;padding:1.5rem 1rem;margin-top:auto;border-top:1px solid var(--line);color:var(--t2);font-size:.82rem;font-weight:600;letter-spacing:.08em}
-.charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;margin-bottom:2rem}
-@media(max-width:900px){.charts-grid{grid-template-columns:1fr}}
-.chart-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.5rem}
-.chart-hdr{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem;border-bottom:1px solid var(--line);padding-bottom:.75rem}
-.chart-hdr h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700}
-.legend{display:flex;gap:1rem;font-size:.8rem;color:var(--t2)}
-.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:.35rem}
-.bar-list{display:flex;flex-direction:column;gap:.75rem}
-.bar-row{display:grid;grid-template-columns:72px 1fr 65px;align-items:center;gap:.75rem;font-size:.84rem}
-.bar-lbl{font-weight:700;color:var(--t1)}
-.bar-track{height:14px;background:var(--bg);border-radius:7px;overflow:hidden;display:flex}
-.bar-l{background:linear-gradient(90deg,#3b82f6,#06b6d4);height:100%;transition:width .5s}
-.bar-p{background:linear-gradient(90deg,#ec4899,#f43f5e);height:100%;transition:width .5s}
-.bar-val{text-align:right;font-weight:600;color:var(--t2)}
-.donut-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;padding-top:.5rem}
-.donut-info{width:100%;display:flex;flex-direction:column;gap:.65rem;font-size:.88rem}
-.d-item{display:flex;justify-content:space-between;padding:.55rem .8rem;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -223,11 +224,35 @@ document.getElementById('c-baru').textContent=c.t.toLocaleString('id-ID');
 document.getElementById('g-baru').innerHTML=`${c.l.toLocaleString('id-ID')} Laki-laki<br>${c.p.toLocaleString('id-ID')} Perempuan`;
 document.getElementById('c-akhir').textContent=a.t.toLocaleString('id-ID');
 document.getElementById('g-akhir').innerHTML=`${a.l.toLocaleString('id-ID')} Laki-laki<br>${a.p.toLocaleString('id-ID')} Perempuan`;
+renderCharts(a);
+}
+function renderCharts(a){
+const maxTps=Math.max(...tpsSummary.map(x=>x.total),1);
+document.getElementById('tpsBarChart').innerHTML=tpsSummary.map(t=>{
+const wL=(t.l/maxTps*100).toFixed(1),wP=(t.p/maxTps*100).toFixed(1);
+return`<div class="bar-row" style="cursor:pointer" onclick="openTps('${t.tps}')" title="Klik untuk melihat daftar pemilih ${t.tps}"><span class="bar-lbl">${t.tps}</span><div class="bar-track"><div class="bar-l" style="width:${wL}%"></div><div class="bar-p" style="width:${wP}%"></div></div><span class="bar-val">${t.total.toLocaleString('id-ID')}</span></div>`;
+}).join('');
+
+const pctL=a.t?((a.l/a.t)*100).toFixed(1):0;
+const pctP=a.t?((a.p/a.t)*100).toFixed(1):0;
+const degL=a.t?(a.l/a.t)*360:0;
+document.getElementById('genderDonutChart').innerHTML=`
+<div style="width:165px;height:165px;border-radius:50%;background:conic-gradient(#06b6d4 0deg ${degL}deg,#f43f5e ${degL}deg 360deg);display:flex;align-items:center;justify-content:center;box-shadow:0 0 25px rgba(6,182,212,.2)">
+<div style="width:108px;height:108px;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center">
+<strong style="font-family:'Space Grotesk',sans-serif;font-size:1.4rem">${a.t.toLocaleString('id-ID')}</strong>
+<span style="font-size:.75rem;color:var(--t2)">Total DPT</span>
+</div>
+</div>
+<div class="donut-info">
+<div class="d-item"><span><i class="dot" style="background:#06b6d4"></i>Laki-laki</span><strong>${a.l.toLocaleString('id-ID')} (${pctL}%)</strong></div>
+<div class="d-item"><span><i class="dot" style="background:#f43f5e"></i>Perempuan</span><strong>${a.p.toLocaleString('id-ID')} (${pctP}%)</strong></div>
+</div>`;
 }
 
 function openView(v){
 view=v;selectedTps=null;limit=30;
 document.getElementById('statsSection').style.display='none';
+document.getElementById('chartsSection').style.display='none';
 document.getElementById('viewBar').style.display='flex';
 document.getElementById('btnNextTps').style.display='none';
 document.getElementById('searchPanel').style.display='none';
@@ -256,6 +281,9 @@ window.scrollTo({top:0,behavior:'smooth'});
 
 function openTps(tpsName){
 view='tps-detail';selectedTps=tpsName;gender='ALL';limit=30;
+document.getElementById('statsSection').style.display='none';
+document.getElementById('chartsSection').style.display='none';
+document.getElementById('viewBar').style.display='flex';
 document.getElementById('q').value='';
 document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('active'));
 document.getElementById('g-ALL').classList.add('active');
@@ -284,6 +312,7 @@ function handleBack(){
 if(view==='tps-detail'){openView('rekap');return;}
 view=null;selectedTps=null;
 document.getElementById('statsSection').style.display='grid';
+document.getElementById('chartsSection').style.display='grid';
 document.getElementById('viewBar').style.display='none';
 document.getElementById('btnNextTps').style.display='none';
 document.getElementById('searchPanel').style.display='none';
