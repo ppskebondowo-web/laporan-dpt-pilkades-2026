@@ -173,17 +173,26 @@
 
 
 <script>
-    const state = { dpt: [], baru: [], tms: [], activeTab: 'dpt', filteredData: [], displayLimit: 30 };
+    const state = { dpt: [], baru: [], tms: [], activeTab: 'dpt', filteredData: [], displayLimit: 30, errors: [] };
 
     function fetchCSV(url) {
         return new Promise((resolve) => {
-            Papa.parse(url, {
-                download: true, header: true, delimiter: ";", skipEmptyLines: true,
-                transformHeader: (h) => h.trim(),
-                complete: (res) => resolve(res.data),
-                error: () => resolve([])
+            Papa.parse(encodeURI(url), {
+                download: true, header: true, skipEmptyLines: true,
+                transformHeader: (h) => h.replace(/^\uFEFF/, '').trim().toLowerCase(),
+                complete: (res) => resolve(res.data || []),
+                error: () => { state.errors.push(url); resolve([]); }
             });
         });
+    }
+
+    function getCol(row, keys) {
+        for (let k of keys) {
+            if (row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== '') {
+                return String(row[k]).trim();
+            }
+        }
+        return '';
     }
 
     function normalizeTPS(rawTps) {
@@ -208,9 +217,12 @@
         const tpsPromises = tpsNums.map(async (num) => {
             const rows = await fetchCSV("TPS " + num + ".csv");
             return rows.map(r => ({
-                id: (r.ID || '-').trim(), nama: (r.Nama || '').trim(),
-                jk: (r.JnsKlmn || '-').trim(), usia: (r.Usia || '-').trim(),
-                alamat: (r.Alamat || '-').trim(), tps: "TPS " + num
+                id: getCol(r, ['id']) || '-',
+                nama: getCol(r, ['nama']),
+                jk: getCol(r, ['jnsklmn', 'jenis_kelamin', 'jk']) || '-',
+                usia: getCol(r, ['usia', 'umur']) || '-',
+                alamat: getCol(r, ['alamat']) || '-',
+                tps: "TPS " + num
             }));
         });
 
@@ -219,16 +231,25 @@
         ]);
 
         state.dpt = tpsRes.flat().filter(x => x.nama !== '');
-        state.baru = rawBaru.filter(r => r.Nama && r.Nama.trim() !== '').map(r => ({
-            nama: r.Nama.trim(), jk: (r.Jenis_Kelamin || '-').trim(),
-            umur: (r.Umur || '-').trim(), alamat: (r.Alamat || '-').trim(), tps: normalizeTPS(r.TPS)
-        }));
-        state.tms = rawTms.filter(r => r.Nama && r.Nama.trim() !== '').map(r => ({
-            no: (r.No || '-').trim(), nkk: (r.NKK || '-').trim(), nik: (r.NIK || '-').trim(),
-            nama: r.Nama.trim(), jk: (r.Jenis_Kelamin || '-').trim(),
-            umur: (r.Umur || '-').trim(), alamat: (r.Alamat || '-').trim(),
-            tps: normalizeTPS(r.TPS), keterangan: (r.Keterangan_TMS || '-').trim()
-        }));
+        state.baru = rawBaru.map(r => ({
+            nama: getCol(r, ['nama']),
+            jk: getCol(r, ['jenis_kelamin', 'jnsklmn', 'jk']) || '-',
+            umur: getCol(r, ['umur', 'usia']) || '-',
+            alamat: getCol(r, ['alamat']) || '-',
+            tps: normalizeTPS(getCol(r, ['tps']))
+        })).filter(x => x.nama !== '');
+
+        state.tms = rawTms.map(r => ({
+            no: getCol(r, ['no']) || '-',
+            nkk: getCol(r, ['nkk']) || '-',
+            nik: getCol(r, ['nik']) || '-',
+            nama: getCol(r, ['nama']),
+            jk: getCol(r, ['jenis_kelamin', 'jnsklmn', 'jk']) || '-',
+            umur: getCol(r, ['umur', 'usia']) || '-',
+            alamat: getCol(r, ['alamat']) || '-',
+            tps: normalizeTPS(getCol(r, ['tps'])),
+            keterangan: getCol(r, ['keterangan_tms', 'keterangan']) || '-'
+        })).filter(x => x.nama !== '');
 
         const sDps = countGender(state.dpt), sTms = countGender(state.tms), sBaru = countGender(state.baru);
         document.getElementById('count-dps').textContent = sDps.total.toLocaleString('id-ID');
@@ -266,7 +287,8 @@
         const visible = state.filteredData.slice(0, state.displayLimit);
         document.getElementById('resultSummary').textContent = "Menampilkan " + visible.length.toLocaleString('id-ID') + " dari " + total.toLocaleString('id-ID') + " data pemilih";
         if (total === 0) {
-            container.innerHTML = '<div class="status-message">Tidak ada data pemilih yang cocok dengan pencarian Anda.</div>';
+            const errInfo = state.errors.length > 0 ? "<br><small style='color:#fda4af'>File tidak ditemukan / diblokir browser: " + state.errors.join(', ') + "</small>" : "";
+            container.innerHTML = '<div class="status-message">Tidak ada data pemilih yang ditemukan.' + errInfo + '</div>';
             document.getElementById('loadMoreContainer').style.display = 'none';
             return;
         }
@@ -307,3 +329,4 @@
 </script>
 </body>
 </html>
+
