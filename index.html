@@ -3,204 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Perkembangan Data Pemilih - Pilkades 2026</title>
+    <title>Perkembangan Daftar Pemilih - Pilkades Kebondowo 2026</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
     <script src="https://cloudflare.com"></script>
     <style>
         :root {
-            --bg-main: #090d16;
-            --bg-card: #111827;
-            --bg-card-hover: #1a2438;
-            --border-color: #1f2937;
-            --accent-cyan: #06b6d4;
-            --accent-blue: #3b82f6;
-            --accent-rose: #f43f5e;
-            --accent-emerald: #10b981;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
+            --bg-main: #090d16; --bg-card: #111827; --bg-card-hover: #1a2438;
+            --border-color: #1f2937; --accent-cyan: #06b6d4; --accent-blue: #3b82f6;
+            --accent-indigo: #6366f1; --accent-rose: #f43f5e; --accent-emerald: #10b981;
+            --text-primary: #f8fafc; --text-secondary: #94a3b8;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.08), transparent 25%),
-                radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.08), transparent 25%);
+            background-color: var(--bg-main); color: var(--text-primary);
+            font-family: 'Inter', sans-serif; line-height: 1.6;
+            background-image: radial-gradient(circle at 15% 15%, rgba(6,182,212,0.08), transparent 25%),
+                              radial-gradient(circle at 85% 85%, rgba(99,102,241,0.08), transparent 25%);
             min-height: 100vh;
         }
         .container { max-width: 1360px; margin: 0 auto; padding: 2rem 1.5rem; }
-        header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
+        header { text-align: center; margin-bottom: 2.25rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); }
         .badge-header {
-            display: inline-block;
-            padding: 0.35rem 1rem;
-            background: rgba(6, 182, 212, 0.12);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            color: var(--accent-cyan);
-            border-radius: 999px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 0.75rem;
+            display: inline-block; padding: 0.35rem 1rem; background: rgba(6,182,212,0.12);
+            border: 1px solid rgba(6,182,212,0.3); color: var(--accent-cyan); border-radius: 999px;
+            font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem;
         }
         h1 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(1.75rem, 4vw, 2.5rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            background: linear-gradient(to right, #ffffff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.85rem, 4vw, 2.6rem); font-weight: 700;
+            background: linear-gradient(to right, #ffffff, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        header p { color: var(--text-secondary); margin-top: 0.5rem; font-size: 1rem; }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 2rem;
-        }
+        header p { color: var(--text-secondary); margin-top: 0.4rem; font-size: 1.05rem; font-weight: 500; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(225px, 1fr)); gap: 1.15rem; margin-bottom: 2rem; }
         .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 1.35rem; position: relative; overflow: hidden; transition: transform 0.2s, border-color 0.2s;
         }
-        .stat-card:hover { transform: translateY(-2px); border-color: rgba(6, 182, 212, 0.4); }
+        .stat-card:hover { transform: translateY(-2px); border-color: rgba(99,102,241,0.45); }
         .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-        .stat-dpt::before { background: var(--accent-cyan); }
-        .stat-baru::before { background: var(--accent-emerald); }
+        .stat-wilayah::before { background: var(--accent-blue); }
+        .stat-dps::before { background: var(--accent-cyan); }
         .stat-tms::before { background: var(--accent-rose); }
-        .stat-title { font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
-        .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 2.25rem; font-weight: 700; margin-top: 0.25rem; color: var(--text-primary); }
-        .stat-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .stat-baru::before { background: var(--accent-emerald); }
+        .stat-dpt::before { background: var(--accent-indigo); }
+        .stat-title { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 2.1rem; font-weight: 700; margin-top: 0.2rem; }
+        .stat-desc { font-size: 0.84rem; color: var(--text-secondary); margin-top: 0.25rem; }
         .controls-wrapper {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.25rem;
-            margin-bottom: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 1.25rem; margin-bottom: 1.75rem; display: flex; flex-direction: column; gap: 1.25rem;
         }
-        .tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1.25rem;
-        }
+        .tabs { display: flex; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.25rem; }
         .tab-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 0.65rem 1.25rem;
-            border-radius: 10px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-secondary);
+            padding: 0.7rem 1.35rem; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer;
         }
-        .tab-btn:hover { background: rgba(255, 255, 255, 0.07); color: var(--text-primary); }
-        .tab-btn.active[data-tab="dpt"] { background: rgba(6, 182, 212, 0.15); border-color: var(--accent-cyan); color: var(--accent-cyan); }
-        .tab-btn.active[data-tab="baru"] { background: rgba(16, 185, 129, 0.15); border-color: var(--accent-emerald); color: var(--accent-emerald); }
-        .tab-btn.active[data-tab="tms"] { background: rgba(244, 63, 94, 0.15); border-color: var(--accent-rose); color: var(--accent-rose); }
+        .tab-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+        .tab-btn.active { background: var(--accent-indigo); border-color: var(--accent-indigo); color: #fff; box-shadow: 0 4px 14px rgba(99,102,241,0.35); }
         .search-filter-bar { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
         @media (max-width: 768px) { .search-filter-bar { grid-template-columns: 1fr; } }
         .input-group input, .input-group select {
-            width: 100%;
-            background: #090d16;
-            border: 1px solid #334155;
-            color: var(--text-primary);
-            padding: 0.8rem 1rem;
-            border-radius: 10px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
+            width: 100%; background: #090d16; border: 1px solid #334155; color: var(--text-primary);
+            padding: 0.8rem 1rem; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 0.95rem; outline: none;
         }
-        .input-group input:focus, .input-group select:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15); }
-        .result-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .input-group input:focus, .input-group select:focus { border-color: var(--accent-indigo); box-shadow: 0 0 0 3px rgba(99,102,241,0.18); }
+        .result-info { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.92rem; }
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 1.25rem; }
         .voter-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 1.35rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.85rem;
-            transition: all 0.2s ease;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px;
+            padding: 1.35rem; display: flex; flex-direction: column; gap: 0.85rem; transition: 0.2s;
         }
         .voter-card:hover { background: var(--bg-card-hover); border-color: #334155; transform: translateY(-2px); }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 0.75rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.75rem;
-        }
-        .voter-name { font-size: 1.125rem; font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; }
+        .voter-name { font-size: 1.125rem; font-weight: 700; line-height: 1.3; }
         .tps-badge {
-            background: rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            color: #60a5fa;
-            font-size: 0.78rem;
-            font-weight: 700;
-            padding: 0.25rem 0.65rem;
-            border-radius: 8px;
-            white-space: nowrap;
+            background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); color: #60a5fa;
+            font-size: 0.78rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 8px; white-space: nowrap;
         }
         .card-body { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.92rem; }
         .info-row { display: flex; justify-content: space-between; gap: 1rem; }
         .info-label { color: var(--text-secondary); font-weight: 500; min-width: 105px; }
         .info-value { color: var(--text-primary); font-weight: 500; text-align: right; word-break: break-word; }
-        .mono-text { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.03em; color: #e2e8f0; }
+        .mono-text { font-family: monospace; letter-spacing: 0.03em; color: #e2e8f0; }
         .tms-reason {
-            margin-top: 0.4rem;
-            padding: 0.65rem 0.85rem;
-            background: rgba(244, 63, 94, 0.1);
-            border-left: 3px solid var(--accent-rose);
-            border-radius: 6px;
-            font-size: 0.88rem;
-            color: #fda4af;
+            margin-top: 0.4rem; padding: 0.65rem 0.85rem; background: rgba(244,63,94,0.1);
+            border-left: 3px solid var(--accent-rose); border-radius: 6px; font-size: 0.88rem; color: #fda4af;
         }
         .load-more-container { text-align: center; margin-top: 2.5rem; }
         .btn-load-more {
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-            color: #ffffff;
-            border: none;
-            padding: 0.85rem 2rem;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: opacity 0.2s;
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-blue));
+            color: #fff; border: none; padding: 0.85rem 2rem; border-radius: 10px; font-weight: 600; font-size: 0.95rem; cursor: pointer;
         }
-        .btn-load-more:hover { opacity: 0.9; }
         .status-message {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--text-secondary);
-            grid-column: 1 / -1;
-            background: var(--bg-card);
-            border-radius: 14px;
-            border: 1px dashed var(--border-color);
+            text-align: center; padding: 3rem 1rem; color: var(--text-secondary); grid-column: 1 / -1;
+            background: var(--bg-card); border-radius: 14px; border: 1px dashed var(--border-color);
         }
     </style>
 </head>
@@ -208,16 +105,202 @@
 <div class="container">
     <header>
         <span class="badge-header">Sistem Informasi Pemutakhiran Data</span>
-        <h1>Laporan Perkembangan Pemilih Pilkades 2026</h1>
-        <p>Transparansi Data Pemilih Tetap (DPT), Usulan Pemilih Baru, dan Pemilih Tidak Memenuhi Syarat (TMS)</p>
+        <h1>Perkembangan Daftar Pemilih</h1>
+        <p>Pemilihan Kepala Desa Kebondowo Tahun 2026 &bull; Kecamatan Banyubiru</p>
     </header>
 
     <section class="stats-grid">
-        <div class="stat-card stat-dpt">
-            <div class="stat-title">Total Pemilih DPT</div>
-            <div class="stat-value" id="count-dpt">0</div>
-            <div class="stat-desc">Tersebar di TPS 001 s.d. TPS 011</div>
+        <div class="stat-card stat-wilayah">
+            <div class="stat-title">Cakupan Wilayah</div>
+            <div class="stat-value">11 TPS Aktif</div>
+            <div class="stat-desc">TPS 001 s.d. TPS 011 Desa Kebondowo</div>
+        </div>
+        <div class="stat-card stat-dps">
+            <div class="stat-title">Total DPS Awal</div>
+            <div class="stat-value" id="count-dps">0</div>
+            <div class="stat-desc" id="gender-dps">Laki-laki: 0 &bull; Perempuan: 0</div>
+        </div>
+        <div class="stat-card stat-tms">
+            <div class="stat-title">Pemilih TMS</div>
+            <div class="stat-value" id="count-tms">0</div>
+            <div class="stat-desc" id="gender-tms">Laki-laki: 0 &bull; Perempuan: 0</div>
         </div>
         <div class="stat-card stat-baru">
-            <div class="stat-title">Pemilih Baru (Usulan Masyarakat)</div>
+            <div class="stat-title">Pemilih Baru (Usulan)</div>
             <div class="stat-value" id="count-baru">0</div>
+            <div class="stat-desc" id="gender-baru">Laki-laki: 0 &bull; Perempuan: 0</div>
+        </div>
+        <div class="stat-card stat-dpt">
+            <div class="stat-title">Total DPT Akhir</div>
+            <div class="stat-value" id="count-dpt-akhir">0</div>
+            <div class="stat-desc" id="gender-dpt-akhir">Laki-laki: 0 &bull; Perempuan: 0</div>
+        </div>
+    </section>
+
+    <section class="controls-wrapper">
+        <div class="tabs">
+            <button id="tab-dpt" class="tab-btn active" onclick="switchTab('dpt')">Daftar Pemilih Tetap (DPT)</button>
+            <button id="tab-tms" class="tab-btn" onclick="switchTab('tms')">Pemilih TMS (Lengkap)</button>
+            <button id="tab-baru" class="tab-btn" onclick="switchTab('baru')">Pemilih Baru (Usulan)</button>
+        </div>
+        <div class="search-filter-bar">
+            <div class="input-group">
+                <input type="text" id="searchInput" placeholder="Cari berdasarkan nama pemilih..." oninput="handleFilter()">
+            </div>
+            <div class="input-group">
+                <select id="tpsFilter" onchange="handleFilter()">
+                    <option value="ALL">Semua TPS (TPS 001 - TPS 011)</option>
+                    <option value="TPS 001">TPS 001</option><option value="TPS 002">TPS 002</option>
+                    <option value="TPS 003">TPS 003</option><option value="TPS 004">TPS 004</option>
+                    <option value="TPS 005">TPS 005</option><option value="TPS 006">TPS 006</option>
+                    <option value="TPS 007">TPS 007</option><option value="TPS 008">TPS 008</option>
+                    <option value="TPS 009">TPS 009</option><option value="TPS 010">TPS 010</option>
+                    <option value="TPS 011">TPS 011</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <div class="result-info"><span id="resultSummary">Memuat data pemilih...</span></div>
+    <main class="cards-grid" id="cardsContainer">
+        <div class="status-message">Sedang membaca file CSV dari repository...</div>
+    </main>
+    <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+        <button class="btn-load-more" onclick="loadMore()">Tampilkan Lebih Banyak Data</button>
+    </div>
+</div>
+<script>
+    const state = { dpt: [], baru: [], tms: [], activeTab: 'dpt', filteredData: [], displayLimit: 30 };
+
+    function fetchCSV(url) {
+        return new Promise((resolve) => {
+            Papa.parse(url, {
+                download: true, header: true, delimiter: ";", skipEmptyLines: true,
+                transformHeader: (h) => h.trim(),
+                complete: (res) => resolve(res.data),
+                error: () => resolve([])
+            });
+        });
+    }
+
+    function normalizeTPS(rawTps) {
+        if (!rawTps) return "Tidak Diketahui";
+        const clean = rawTps.toString().trim().toUpperCase();
+        const numMatch = clean.match(/\d+/);
+        return numMatch ? "TPS " + numMatch.padStart(3, '0') : clean;
+    }
+
+    function countGender(list) {
+        let l = 0, p = 0;
+        list.forEach(item => {
+            const g = (item.jk || '').toUpperCase();
+            if (g === 'L' || g.startsWith('LAKI')) l++;
+            else if (g === 'P' || g.startsWith('PEREMPUAN')) p++;
+        });
+        return { l, p, total: list.length };
+    }
+
+    async function initApp() {
+        const tpsNums = ['001','002','003','004','005','006','007','008','009','010','011'];
+        const tpsPromises = tpsNums.map(async (num) => {
+            const rows = await fetchCSV("TPS " + num + ".csv");
+            return rows.map(r => ({
+                id: (r.ID || '-').trim(), nama: (r.Nama || '').trim(),
+                jk: (r.JnsKlmn || '-').trim(), usia: (r.Usia || '-').trim(),
+                alamat: (r.Alamat || '-').trim(), tps: "TPS " + num
+            }));
+        });
+
+        const [tpsRes, rawBaru, rawTms] = await Promise.all([
+            Promise.all(tpsPromises), fetchCSV('data_baru.csv'), fetchCSV('data_tms.csv')
+        ]);
+
+        state.dpt = tpsRes.flat().filter(x => x.nama !== '');
+        state.baru = rawBaru.filter(r => r.Nama && r.Nama.trim() !== '').map(r => ({
+            nama: r.Nama.trim(), jk: (r.Jenis_Kelamin || '-').trim(),
+            umur: (r.Umur || '-').trim(), alamat: (r.Alamat || '-').trim(), tps: normalizeTPS(r.TPS)
+        }));
+        state.tms = rawTms.filter(r => r.Nama && r.Nama.trim() !== '').map(r => ({
+            no: (r.No || '-').trim(), nkk: (r.NKK || '-').trim(), nik: (r.NIK || '-').trim(),
+            nama: r.Nama.trim(), jk: (r.Jenis_Kelamin || '-').trim(),
+            umur: (r.Umur || '-').trim(), alamat: (r.Alamat || '-').trim(),
+            tps: normalizeTPS(r.TPS), keterangan: (r.Keterangan_TMS || '-').trim()
+        }));
+
+        const sDps = countGender(state.dpt), sTms = countGender(state.tms), sBaru = countGender(state.baru);
+        document.getElementById('count-dps').textContent = sDps.total.toLocaleString('id-ID');
+        document.getElementById('gender-dps').textContent = "Laki-laki: " + sDps.l.toLocaleString('id-ID') + " • Perempuan: " + sDps.p.toLocaleString('id-ID');
+        document.getElementById('count-tms').textContent = sTms.total.toLocaleString('id-ID');
+        document.getElementById('gender-tms').textContent = "Laki-laki: " + sTms.l.toLocaleString('id-ID') + " • Perempuan: " + sTms.p.toLocaleString('id-ID');
+        document.getElementById('count-baru').textContent = sBaru.total.toLocaleString('id-ID');
+        document.getElementById('gender-baru').textContent = "Laki-laki: " + sBaru.l.toLocaleString('id-ID') + " • Perempuan: " + sBaru.p.toLocaleString('id-ID');
+        document.getElementById('count-dpt-akhir').textContent = (sDps.total - sTms.total + sBaru.total).toLocaleString('id-ID');
+        document.getElementById('gender-dpt-akhir').textContent = "Laki-laki: " + (sDps.l - sTms.l + sBaru.l).toLocaleString('id-ID') + " • Perempuan: " + (sDps.p - sTms.p + sBaru.p).toLocaleString('id-ID');
+
+        handleFilter();
+    }
+
+    function switchTab(tab) {
+        state.activeTab = tab; state.displayLimit = 30;
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('tab-' + tab).classList.add('active');
+        handleFilter();
+    }
+
+    function handleFilter() {
+        const kw = document.getElementById('searchInput').value.toLowerCase().trim();
+        const tps = document.getElementById('tpsFilter').value;
+        state.filteredData = state[state.activeTab].filter(i => i.nama.toLowerCase().includes(kw) && (tps === 'ALL' || i.tps === tps));
+        state.displayLimit = 30;
+        renderCards();
+    }
+
+    function loadMore() { state.displayLimit += 30; renderCards(); }
+
+    function renderCards() {
+        const container = document.getElementById('cardsContainer');
+        const total = state.filteredData.length;
+        const visible = state.filteredData.slice(0, state.displayLimit);
+        document.getElementById('resultSummary').textContent = "Menampilkan " + visible.length.toLocaleString('id-ID') + " dari " + total.toLocaleString('id-ID') + " data pemilih";
+        if (total === 0) {
+            container.innerHTML = '<div class="status-message">Tidak ada data pemilih yang cocok dengan pencarian Anda.</div>';
+            document.getElementById('loadMoreContainer').style.display = 'none';
+            return;
+        }
+        container.innerHTML = visible.map(item => createCardHTML(item, state.activeTab)).join('');
+        document.getElementById('loadMoreContainer').style.display = state.displayLimit < total ? 'block' : 'none';
+    }
+
+    function createCardHTML(item, type) {
+        if (type === 'tms') {
+            return '<article class="voter-card"><div class="card-header"><h2 class="voter-name">' + esc(item.nama) + '</h2><span class="tps-badge">' + esc(item.tps) + '</span></div><div class="card-body">' +
+                '<div class="info-row"><span class="info-label">No. Urut</span><span class="info-value">' + esc(item.no) + '</span></div>' +
+                '<div class="info-row"><span class="info-label">NKK</span><span class="info-value mono-text">' + esc(item.nkk) + '</span></div>' +
+                '<div class="info-row"><span class="info-label">NIK</span><span class="info-value mono-text">' + esc(item.nik) + '</span></div>' +
+                '<div class="info-row"><span class="info-label">Jenis Kelamin</span><span class="info-value">' + esc(item.jk) + '</span></div>' +
+                '<div class="info-row"><span class="info-label">Umur</span><span class="info-value">' + esc(item.umur) + ' Tahun</span></div>' +
+                '<div class="info-row"><span class="info-label">Alamat</span><span class="info-value">' + esc(item.alamat) + '</span></div>' +
+                '<div class="tms-reason"><strong>Status TMS:</strong> ' + esc(item.keterangan) + '</div></div></article>';
+        } else if (type === 'baru') {
+            return '<article class="voter-card"><div class="card-header"><h2 class="voter-name">' + esc(item.nama) + '</h2><span class="tps-badge">' + esc(item.tps) + '</span></div><div class="card-body">' +
+                '<div class="info-row"><span class="info-label">Jenis Kelamin</span><span class="info-value">' + esc(item.jk) + '</span></div>' +
+                '<div class="info-row"><span class="info-label">Umur</span><span class="info-value">' + esc(item.umur) + ' Tahun</span></div>' +
+                '<div class="info-row"><span class="info-label">Alamat</span><span class="info-value">' + esc(item.alamat) + '</span></div>' +
+                '<div class="info-row"><span class="info-label">TPS Dituju</span><span class="info-value" style="color:var(--accent-emerald);font-weight:600;">' + esc(item.tps) + '</span></div></div></article>';
+        } else {
+            return '<article class="voter-card"><div class="card-header"><h2 class="voter-name">' + esc(item.nama) + '</h2><span class="tps-badge">' + esc(item.tps) + '</span></div><div class="card-body">' +
+                '<div class="info-row"><span class="info-label">ID Pemilih</span><span class="info-value mono-text">' + esc(item.id) + '</span></div>' +
+                '<div class="info-row"><span class="info-label">Jenis Kelamin</span><span class="info-value">' + esc(item.jk) + '</span></div>' +
+                '<div class="info-row"><span class="info-label">Usia</span><span class="info-value">' + esc(item.usia) + ' Tahun</span></div>' +
+                '<div class="info-row"><span class="info-label">Alamat</span><span class="info-value">' + esc(item.alamat) + '</span></div></div></article>';
+        }
+    }
+
+    function esc(str) {
+        return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    }
+
+    window.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
