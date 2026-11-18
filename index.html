@@ -30,12 +30,23 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 .btn-back{background:rgba(255,255,255,.07);border:1px solid #334155;color:var(--t1);padding:.65rem 1.15rem;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;transition:.2s}
 .btn-back:hover{background:rgba(255,255,255,.14)}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.15rem;margin-bottom:1.5rem;display:none}
-.filters{display:grid;grid-template-columns:2fr 1fr;gap:.85rem}
-@media(max-width:768px){.filters{grid-template-columns:1fr}}
-.filters input,.filters select{width:100%;background:var(--bg);border:1px solid #334155;color:var(--t1);padding:.75rem 1rem;border-radius:10px;font-size:.95rem;outline:none}
-.filters input:focus,.filters select:focus{border-color:var(--indigo)}
+.filters{display:flex;flex-wrap:wrap;gap:.85rem;align-items:center}
+.filters input{flex:1;min-width:240px;background:var(--bg);border:1px solid #334155;color:var(--t1);padding:.75rem 1rem;border-radius:10px;font-size:.95rem;outline:none}
+.filters input:focus{border-color:var(--indigo)}
+.g-group{display:flex;gap:.45rem;background:var(--bg);padding:.3rem;border-radius:10px;border:1px solid #334155}
+.g-btn{background:transparent;border:none;color:var(--t2);padding:.5rem .95rem;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;transition:.2s}
+.g-btn:hover{color:var(--t1)}
+.g-btn.active{background:var(--indigo);color:#fff}
 .summary{margin-bottom:1rem;color:var(--t2);font-size:.92rem;font-weight:500;display:none}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.15rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.15rem}
+.tps-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.35rem;cursor:pointer;transition:all .2s ease;position:relative;overflow:hidden}
+.tps-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--indigo),var(--cyan))}
+.tps-card:hover{background:var(--hover);border-color:var(--indigo);transform:translateY(-2px)}
+.tps-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.tps-title{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700;color:var(--t1)}
+.tps-total{font-family:'Space Grotesk',sans-serif;font-size:2.1rem;font-weight:700;color:var(--cyan);margin-bottom:.45rem}
+.tps-total span{font-family:'Inter',sans-serif;font-size:.85rem;font-weight:500;color:var(--t2)}
+.tps-split{display:flex;gap:1rem;font-size:.88rem;color:var(--t2);border-top:1px solid var(--line);padding-top:.65rem}
 .vcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.25rem;display:flex;flex-direction:column;gap:.75rem}
 .vcard:hover{background:var(--hover);border-color:#334155}
 .vhdr{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;border-bottom:1px solid var(--line);padding-bottom:.65rem}
@@ -81,8 +92,8 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 <div class="sval" id="c-baru">0</div>
 <div class="sdesc" id="g-baru">Laki-laki: 0 &bull; Perempuan: 0</div>
 </div>
-<div class="scard s5 clickable" onclick="openView('dpt')">
-<div class="stitle"><span>Total DPT Akhir</span><span class="click-hint">Buka Daftar</span></div>
+<div class="scard s5 clickable" onclick="openView('rekap')">
+<div class="stitle"><span>Total DPT Akhir</span><span class="click-hint">Rekap TPS</span></div>
 <div class="sval" id="c-akhir">0</div>
 <div class="sdesc" id="g-akhir">Laki-laki: 0 &bull; Perempuan: 0</div>
 </div>
@@ -93,19 +104,17 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 <h2 id="viewTitle">Judul Kategori</h2>
 <p id="viewSub">Keterangan kategori</p>
 </div>
-<button class="btn-back" onclick="backToHome()">&larr; Kembali ke Ringkasan</button>
+<button class="btn-back" id="btnBack" onclick="handleBack()">&larr; Kembali ke Ringkasan</button>
 </section>
 
 <section class="panel" id="searchPanel">
 <div class="filters">
-<input type="text" id="q" placeholder="Cari berdasarkan nama pemilih..." oninput="filterData()">
-<select id="tps" onchange="filterData()">
-<option value="ALL">Semua TPS (TPS 001 - TPS 011)</option>
-<option value="TPS 001">TPS 001</option><option value="TPS 002">TPS 002</option><option value="TPS 003">TPS 003</option>
-<option value="TPS 004">TPS 004</option><option value="TPS 005">TPS 005</option><option value="TPS 006">TPS 006</option>
-<option value="TPS 007">TPS 007</option><option value="TPS 008">TPS 008</option><option value="TPS 009">TPS 009</option>
-<option value="TPS 010">TPS 010</option><option value="TPS 011">TPS 011</option>
-</select>
+<input type="text" id="q" placeholder="Cari berdasarkan nama pemilih di TPS ini..." oninput="filterData()">
+<div class="g-group">
+<button id="g-ALL" class="g-btn active" onclick="setGender('ALL')">Semua</button>
+<button id="g-Laki-laki" class="g-btn" onclick="setGender('Laki-laki')">Laki-laki</button>
+<button id="g-Perempuan" class="g-btn" onclick="setGender('Perempuan')">Perempuan</button>
+</div>
 </div>
 </section>
 <div class="summary" id="summary"></div>
@@ -113,7 +122,7 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 <div class="more" id="more"><button onclick="limit+=30;draw()">Tampilkan Lebih Banyak Data</button></div>
 </div>
 <script>
-let db={dpt:[],baru:[],tms:[]},tab=null,list=[],limit=30,statInfo={};
+let db={dpt:[],baru:[],tms:[]},view=null,selectedTps=null,gender='ALL',list=[],limit=30,statInfo={},tpsSummary=[];
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const jk=v=>{const g=String(v||'').trim().toUpperCase();return(g==='L'||g.startsWith('LAKI'))?'Laki-laki':(g==='P'||g.startsWith('PEREMPUAN'))?'Perempuan':(v||'-');};
 const normTps=v=>{const m=String(v||'').match(/\d+/);return m?'TPS '+m.at(0).padStart(3,'0'):'TPS -';};
@@ -138,13 +147,16 @@ async function start(){
 const nums=['001','002','003','004','005','006','007','008','009','010','011'];
 const tpsAll=await Promise.all(nums.map(async n=>{
 const rows=await loadFiles([`TPS ${n}.csv`,`tps ${n}.csv`,`TPS_${n}.csv`,`TPS${n}.csv`]);
-return rows.map(r=>({id:r.id||'-',nama:r.nama||'',jk:jk(r.jnsklmn||r.jenis_kelamin),usia:r.usia||r.umur||'-',alamat:r.alamat||'-',tps:'TPS '+n}));
+const mapped=rows.map(r=>({id:r.id||'-',nama:r.nama||'',jk:jk(r.jnsklmn||r.jenis_kelamin),usia:r.usia||r.umur||'-',alamat:r.alamat||'-',tps:'TPS '+n})).filter(x=>x.nama);
+const st=stat(mapped);
+tpsSummary.push({tps:'TPS '+n,total:st.t,l:st.l,p:st.p});
+return mapped;
 }));
 const [rawB,rawT]=await Promise.all([
 loadFiles(['data_baru.csv','data baru.csv','Data_Baru.csv','DATA_BARU.csv']),
 loadFiles(['data_tms.csv','data tms.csv','Data_Tms.csv','DATA_TMS.csv'])
 ]);
-db.dpt=tpsAll.flat().filter(x=>x.nama);
+db.dpt=tpsAll.flat();
 db.baru=rawB.map(r=>({nama:r.nama||'',jk:jk(r.jenis_kelamin||r.jnsklmn),umur:r.umur||r.usia||'-',alamat:r.alamat||'-',tps:normTps(r.tps)})).filter(x=>x.nama);
 db.tms=rawT.map(r=>({no:r.no||'-',nkk:r.nkk||'-',nik:r.nik||'-',nama:r.nama||'',jk:jk(r.jenis_kelamin||r.jnsklmn),umur:r.umur||r.usia||'-',alamat:r.alamat||'-',tps:normTps(r.tps),ket:r.keterangan_tms||r.keterangan||'-'})).filter(x=>x.nama);
 
@@ -153,7 +165,7 @@ const dpsT=a.t+b.t-c.t,dpsL=a.l+b.l-c.l,dpsP=a.p+b.p-c.p;
 statInfo={
 tms:`Total ${b.t.toLocaleString('id-ID')} Pemilih • Laki-laki: ${b.l.toLocaleString('id-ID')} • Perempuan: ${b.p.toLocaleString('id-ID')}`,
 baru:`Total ${c.t.toLocaleString('id-ID')} Pemilih • Laki-laki: ${c.l.toLocaleString('id-ID')} • Perempuan: ${c.p.toLocaleString('id-ID')}`,
-dpt:`Total ${a.t.toLocaleString('id-ID')} Pemilih • Laki-laki: ${a.l.toLocaleString('id-ID')} • Perempuan: ${a.p.toLocaleString('id-ID')}`
+rekap:`Total ${a.t.toLocaleString('id-ID')} Pemilih • Laki-laki: ${a.l.toLocaleString('id-ID')} • Perempuan: ${a.p.toLocaleString('id-ID')}`
 };
 document.getElementById('c-dps').textContent=dpsT.toLocaleString('id-ID');
 document.getElementById('g-dps').textContent=`Laki-laki: ${dpsL.toLocaleString('id-ID')} • Perempuan: ${dpsP.toLocaleString('id-ID')}`;
@@ -165,23 +177,52 @@ document.getElementById('c-akhir').textContent=a.t.toLocaleString('id-ID');
 document.getElementById('g-akhir').textContent=`Laki-laki: ${a.l.toLocaleString('id-ID')} • Perempuan: ${a.p.toLocaleString('id-ID')}`;
 }
 
-function openView(t){
-tab=t;limit=30;
-document.getElementById('q').value='';
-document.getElementById('tps').value='ALL';
+function openView(v){
+view=v;selectedTps=null;limit=30;
 document.getElementById('statsSection').style.display='none';
 document.getElementById('viewBar').style.display='flex';
-document.getElementById('searchPanel').style.display=(t==='dpt')?'block':'none';
+document.getElementById('searchPanel').style.display='none';
+document.getElementById('more').style.display='none';
+document.getElementById('btnBack').innerHTML='&larr; Kembali ke Ringkasan';
+
+if(v==='rekap'){
+document.getElementById('viewTitle').textContent='Rekapitulasi DPT Akhir per TPS';
+document.getElementById('viewSub').textContent=statInfo.rekap+' • Klik kartu TPS untuk melihat daftar pemilih';
+document.getElementById('summary').style.display='none';
+document.getElementById('cards').innerHTML=tpsSummary.map(t=>`
+<article class="tps-card" onclick="openTps('${t.tps}')">
+<div class="tps-top"><span class="tps-title">${t.tps}</span><span class="click-hint">Lihat Pemilih &rarr;</span></div>
+<div class="tps-total">${t.total.toLocaleString('id-ID')} <span>Pemilih</span></div>
+<div class="tps-split"><span>Laki-laki: <strong>${t.l.toLocaleString('id-ID')}</strong></span><span>Perempuan: <strong>${t.p.toLocaleString('id-ID')}</strong></span></div>
+</article>`).join('');
+}else{
+const titles={tms:'Pemilih TMS (Tidak Memenuhi Syarat)',baru:'Pemilih Baru (Usulan Masyarakat)'};
+document.getElementById('viewTitle').textContent=titles[v];
+document.getElementById('viewSub').textContent=statInfo[v]||'';
 document.getElementById('summary').style.display='block';
-const titles={tms:'Pemilih TMS (Tidak Memenuhi Syarat)',baru:'Pemilih Baru (Usulan Masyarakat)',dpt:'Total DPT Akhir (11 TPS Desa Kebondowo)'};
-document.getElementById('viewTitle').textContent=titles[t];
-document.getElementById('viewSub').textContent=statInfo[t]||'';
+list=db[v];draw();
+}
+window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function openTps(tpsName){
+view='tps-detail';selectedTps=tpsName;gender='ALL';limit=30;
+document.getElementById('q').value='';
+document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('active'));
+document.getElementById('g-ALL').classList.add('active');
+const info=tpsSummary.find(x=>x.tps===tpsName)||{total:0,l:0,p:0};
+document.getElementById('viewTitle').textContent=`Daftar Pemilih Tetap — ${tpsName}`;
+document.getElementById('viewSub').textContent=`Total ${info.total.toLocaleString('id-ID')} Pemilih • Laki-laki: ${info.l.toLocaleString('id-ID')} • Perempuan: ${info.p.toLocaleString('id-ID')}`;
+document.getElementById('btnBack').innerHTML='&larr; Kembali ke Rekap TPS';
+document.getElementById('searchPanel').style.display='block';
+document.getElementById('summary').style.display='block';
 filterData();
 window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function backToHome(){
-tab=null;
+function handleBack(){
+if(view==='tps-detail'){openView('rekap');return;}
+view=null;selectedTps=null;
 document.getElementById('statsSection').style.display='grid';
 document.getElementById('viewBar').style.display='none';
 document.getElementById('searchPanel').style.display='none';
@@ -190,11 +231,17 @@ document.getElementById('cards').innerHTML='';
 document.getElementById('more').style.display='none';
 }
 
+function setGender(g){
+gender=g;
+document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('active'));
+document.getElementById('g-'+g).classList.add('active');
+filterData();
+}
+
 function filterData(){
-if(!tab)return;
-const q=(tab==='dpt')?document.getElementById('q').value.toLowerCase().trim():'';
-const t=(tab==='dpt')?document.getElementById('tps').value:'ALL';
-list=db[tab].filter(x=>x.nama.toLowerCase().includes(q)&&(t==='ALL'||x.tps===t));
+if(view!=='tps-detail')return;
+const q=document.getElementById('q').value.toLowerCase().trim();
+list=db.dpt.filter(x=>x.tps===selectedTps&&x.nama.toLowerCase().includes(q)&&(gender==='ALL'||x.jk===gender));
 limit=30;draw();
 }
 
@@ -205,8 +252,8 @@ if(!list.length){box.innerHTML='<div class="empty">Tidak ada data pemilih ditemu
 const r=(k,v,m='')=>`<div class="row"><span class="lbl">${k}</span><span class="val ${m}">${esc(v)}</span></div>`;
 box.innerHTML=vis.map(x=>{
 const h=`<div class="vhdr"><h2 class="vname">${esc(x.nama)}</h2><span class="tps">${esc(x.tps)}</span></div><div class="vbody">`;
-if(tab==='tms')return`<article class="vcard">${h}${r('No. Urut',x.no)}${r('NKK',x.nkk,'mono')}${r('NIK',x.nik,'mono')}${r('Jenis Kelamin',x.jk)}${r('Umur',x.umur+' Tahun')}${r('Alamat',x.alamat)}<div class="tms-box"><strong>Status TMS:</strong> ${esc(x.ket)}</div></div></article>`;
-if(tab==='baru')return`<article class="vcard">${h}${r('Jenis Kelamin',x.jk)}${r('Umur',x.umur+' Tahun')}${r('Alamat',x.alamat)}<div class="row"><span class="lbl">TPS Dituju</span><span class="val" style="color:var(--emerald);font-weight:600">${esc(x.tps)}</span></div></div></article>`;
+if(view==='tms')return`<article class="vcard">${h}${r('No. Urut',x.no)}${r('NKK',x.nkk,'mono')}${r('NIK',x.nik,'mono')}${r('Jenis Kelamin',x.jk)}${r('Umur',x.umur+' Tahun')}${r('Alamat',x.alamat)}<div class="tms-box"><strong>Status TMS:</strong> ${esc(x.ket)}</div></div></article>`;
+if(view==='baru')return`<article class="vcard">${h}${r('Jenis Kelamin',x.jk)}${r('Umur',x.umur+' Tahun')}${r('Alamat',x.alamat)}<div class="row"><span class="lbl">TPS Dituju</span><span class="val" style="color:var(--emerald);font-weight:600">${esc(x.tps)}</span></div></div></article>`;
 return`<article class="vcard">${h}${r('ID Pemilih',x.id,'mono')}${r('Jenis Kelamin',x.jk)}${r('Usia',x.usia+' Tahun')}${r('Alamat',x.alamat)}</div></article>`;
 }).join('');
 document.getElementById('more').style.display=limit<list.length?'block':'none';
