@@ -28,8 +28,11 @@ header p{color:var(--t2);margin-top:.4rem;font-size:1.05rem}
 .view-bar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.15rem 1.35rem;margin-bottom:1.5rem;display:none;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .view-info h2{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700}
 .view-info p{font-size:.88rem;color:var(--t2);margin-top:.15rem}
+.nav-btns{display:flex;gap:.55rem;align-items:center;flex-wrap:wrap}
 .btn-back{background:rgba(255,255,255,.07);border:1px solid #334155;color:var(--t1);padding:.65rem 1.15rem;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;transition:.2s}
 .btn-back:hover{background:rgba(255,255,255,.14)}
+.btn-next{background:rgba(99,102,241,.22);border:1px solid var(--indigo);color:#fff;padding:.65rem 1.15rem;border-radius:10px;font-weight:700;font-size:.9rem;cursor:pointer;transition:.2s;display:none}
+.btn-next:hover{background:var(--indigo)}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.15rem;margin-bottom:1.5rem;display:none}
 .filters{display:flex;flex-wrap:wrap;gap:.85rem;align-items:center}
 .filters input{flex:1;min-width:240px;background:var(--bg);border:1px solid #334155;color:var(--t1);padding:.75rem 1rem;border-radius:10px;font-size:.95rem;outline:none}
@@ -76,7 +79,7 @@ footer{text-align:center;padding:1.5rem 1rem;margin-top:auto;border-top:1px soli
 <section class="stats" id="statsSection">
 <div class="scard s1">
 <div class="stitle"><span>Cakupan Wilayah</span></div>
-<div class="sval">11 TPS</div>
+<div class="sval">11 TPS Aktif</div>
 <div class="sdesc">TPS 001 s.d. TPS 011<br>Desa Kebondowo</div>
 </div>
 <div class="scard s2">
@@ -106,9 +109,9 @@ footer{text-align:center;padding:1.5rem 1rem;margin-top:auto;border-top:1px soli
 <h2 id="viewTitle">Judul Kategori</h2>
 <p id="viewSub">Keterangan kategori</p>
 </div>
-<div style="display:flex;gap:.55rem;align-items:center">
+<div class="nav-btns">
 <button class="btn-back" id="btnBack" onclick="handleBack()">&larr; Kembali ke Ringkasan</button>
-<button class="btn-back" id="btnNextTps" onclick="nextTps()" style="display:none;background:rgba(99,102,241,.22);border-color:var(--indigo)" title="TPS Berikutnya">TPS Berikutnya &raquo;</button>
+<button class="btn-next" id="btnNextTps" onclick="nextTps()">TPS Berikutnya &raquo;</button>
 </div>
 </section>
 
@@ -122,13 +125,13 @@ footer{text-align:center;padding:1.5rem 1rem;margin-top:auto;border-top:1px soli
 </div>
 </div>
 </section>
+
 <div class="summary" id="summary"></div>
 <main class="grid" id="cards"></main>
 <div class="more" id="more"><button onclick="limit+=30;draw()">Tampilkan Lebih Banyak Data</button></div>
 </div>
 
 <footer>&copy; PANITIA PILKADES KEBONDOWO 2026</footer>
-
 <script>
 let db={dpt:[],baru:[],tms:[]},view=null,selectedTps=null,gender='ALL',list=[],limit=30,statInfo={},tpsSummary=[];
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -190,6 +193,7 @@ function openView(v){
 view=v;selectedTps=null;limit=30;
 document.getElementById('statsSection').style.display='none';
 document.getElementById('viewBar').style.display='flex';
+document.getElementById('btnNextTps').style.display='none';
 document.getElementById('searchPanel').style.display='none';
 document.getElementById('more').style.display='none';
 document.getElementById('btnBack').innerHTML='&larr; Kembali ke Ringkasan';
@@ -220,13 +224,24 @@ document.getElementById('q').value='';
 document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('active'));
 document.getElementById('g-ALL').classList.add('active');
 const info=tpsSummary.find(x=>x.tps===tpsName)||{total:0,l:0,p:0};
+const idx=tpsSummary.findIndex(x=>x.tps===tpsName);
+const nextObj=tpsSummary.at((idx+1)%tpsSummary.length);
 document.getElementById('viewTitle').textContent=`Daftar Pemilih Tetap — ${tpsName}`;
 document.getElementById('viewSub').textContent=`Total ${info.total.toLocaleString('id-ID')} Pemilih • ${info.l.toLocaleString('id-ID')} Laki-laki • ${info.p.toLocaleString('id-ID')} Perempuan`;
 document.getElementById('btnBack').innerHTML='&larr; Kembali ke Rekap TPS';
+document.getElementById('btnNextTps').style.display='inline-block';
+document.getElementById('btnNextTps').innerHTML=`${nextObj.tps} &raquo;`;
 document.getElementById('searchPanel').style.display='block';
 document.getElementById('summary').style.display='block';
 filterData();
 window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextTps(){
+if(!selectedTps||!tpsSummary.length)return;
+const idx=tpsSummary.findIndex(x=>x.tps===selectedTps);
+const nextObj=tpsSummary.at((idx+1)%tpsSummary.length);
+openTps(nextObj.tps);
 }
 
 function handleBack(){
@@ -234,6 +249,7 @@ if(view==='tps-detail'){openView('rekap');return;}
 view=null;selectedTps=null;
 document.getElementById('statsSection').style.display='grid';
 document.getElementById('viewBar').style.display='none';
+document.getElementById('btnNextTps').style.display='none';
 document.getElementById('searchPanel').style.display='none';
 document.getElementById('summary').style.display='none';
 document.getElementById('cards').innerHTML='';
