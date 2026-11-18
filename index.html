@@ -25,7 +25,7 @@ header p{color:var(--t2);margin-top:.4rem;font-size:1.05rem}
 .scard.clickable:hover .icon-search{background:var(--indigo);color:#fff}
 .sval{font-family:'Space Grotesk',sans-serif;font-size:2.35rem;font-weight:700;margin:.75rem 0}
 .sdesc{font-size:.9rem;color:var(--t2);line-height:1.65;border-top:1px solid var(--line);padding-top:.85rem}
-.charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;margin-bottom:2rem}
+.charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;margin-bottom:1.75rem}
 @media(max-width:900px){.charts-grid{grid-template-columns:1fr}}
 .chart-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.5rem}
 .chart-hdr{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem;border-bottom:1px solid var(--line);padding-bottom:.75rem}
@@ -43,6 +43,16 @@ header p{color:var(--t2);margin-top:.4rem;font-size:1.05rem}
 .donut-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;padding-top:.5rem}
 .donut-info{width:100%;display:flex;flex-direction:column;gap:.65rem;font-size:.88rem}
 .d-item{display:flex;justify-content:space-between;padding:.6rem .85rem;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.age-section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.5rem;margin-bottom:2rem}
+.age-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem}
+.age-box{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:1.1rem;display:flex;flex-direction:column;gap:.55rem}
+.age-top{display:flex;justify-content:space-between;align-items:center;font-size:.86rem}
+.age-lbl{font-weight:700;color:var(--t1)}
+.age-pct{font-size:.78rem;font-weight:600;color:var(--cyan);background:rgba(6,182,212,.12);padding:.15rem .5rem;border-radius:6px}
+.age-num{font-family:'Space Grotesk',sans-serif;font-size:1.75rem;font-weight:700;color:var(--t1)}
+.age-track{height:8px;background:#1e293b;border-radius:99px;overflow:hidden}
+.age-fill{height:100%;background:linear-gradient(90deg,var(--indigo),var(--cyan));border-radius:99px;transition:width .6s ease}
+.age-sub{font-size:.78rem;color:var(--t2);display:flex;justify-content:space-between}
 .view-bar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.15rem 1.35rem;margin-bottom:1.5rem;display:none;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .view-info h2{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700}
 .view-info p{font-size:.88rem;color:var(--t2);margin-top:.15rem}
@@ -97,7 +107,7 @@ footer{text-align:center;padding:1.5rem 1rem;margin-top:auto;border-top:1px soli
 <section class="stats" id="statsSection">
 <div class="scard s1">
 <div class="stitle"><span>Cakupan Wilayah</span></div>
-<div class="sval">11 TPS</div>
+<div class="sval">11 TPS Aktif</div>
 <div class="sdesc">TPS 001 s.d. TPS 011<br>Desa Kebondowo</div>
 </div>
 <div class="scard s2">
@@ -139,6 +149,14 @@ footer{text-align:center;padding:1.5rem 1rem;margin-top:auto;border-top:1px soli
 </div>
 <div class="donut-wrap" id="genderDonutChart"></div>
 </div>
+</section>
+
+<section class="age-section" id="ageSection">
+<div class="chart-hdr" style="margin-bottom:.5rem">
+<h3>Sebaran Kelompok Usia Pemilih (DPT Akhir)</h3>
+<span style="font-size:.82rem;color:var(--t2)">Berdasarkan DPT Akhir Desa Kebondowo</span>
+</div>
+<div class="age-grid" id="ageChartGrid"></div>
 </section>
 
 <section class="view-bar" id="viewBar">
@@ -247,12 +265,37 @@ document.getElementById('genderDonutChart').innerHTML=`
 <div class="d-item"><span><i class="dot" style="background:#06b6d4"></i>Laki-laki</span><strong>${a.l.toLocaleString('id-ID')} (${pctL}%)</strong></div>
 <div class="d-item"><span><i class="dot" style="background:#f43f5e"></i>Perempuan</span><strong>${a.p.toLocaleString('id-ID')} (${pctP}%)</strong></div>
 </div>`;
+
+const groups=[
+{lbl:'17 – 25 Tahun',min:17,max:25,t:0,l:0,p:0},
+{lbl:'26 – 35 Tahun',min:26,max:35,t:0,l:0,p:0},
+{lbl:'36 – 45 Tahun',min:36,max:45,t:0,l:0,p:0},
+{lbl:'46 – 60 Tahun',min:46,max:60,t:0,l:0,p:0},
+{lbl:'> 60 Tahun',min:61,max:200,t:0,l:0,p:0}
+];
+db.dpt.forEach(x=>{
+const u=parseInt(x.usia,10);
+if(!isNaN(u)){
+const g=groups.find(k=>u>=k.min&&u<=k.max);
+if(g){g.t++;if(x.jk==='Laki-laki')g.l++;else if(x.jk==='Perempuan')g.p++;}
+}
+});
+document.getElementById('ageChartGrid').innerHTML=groups.map(g=>{
+const pct=a.t?((g.t/a.t)*100).toFixed(1):0;
+return`<div class="age-box">
+<div class="age-top"><span class="age-lbl">${g.lbl}</span><span class="age-pct">${pct}%</span></div>
+<div class="age-num">${g.t.toLocaleString('id-ID')}</div>
+<div class="age-track"><div class="age-fill" style="width:${pct}%"></div></div>
+<div class="age-sub"><span>L: ${g.l.toLocaleString('id-ID')}</span><span>P: ${g.p.toLocaleString('id-ID')}</span></div>
+</div>`;
+}).join('');
 }
 
 function openView(v){
 view=v;selectedTps=null;limit=30;
 document.getElementById('statsSection').style.display='none';
 document.getElementById('chartsSection').style.display='none';
+document.getElementById('ageSection').style.display='none';
 document.getElementById('viewBar').style.display='flex';
 document.getElementById('btnNextTps').style.display='none';
 document.getElementById('searchPanel').style.display='none';
@@ -283,6 +326,7 @@ function openTps(tpsName){
 view='tps-detail';selectedTps=tpsName;gender='ALL';limit=30;
 document.getElementById('statsSection').style.display='none';
 document.getElementById('chartsSection').style.display='none';
+document.getElementById('ageSection').style.display='none';
 document.getElementById('viewBar').style.display='flex';
 document.getElementById('q').value='';
 document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('active'));
@@ -313,6 +357,7 @@ if(view==='tps-detail'){openView('rekap');return;}
 view=null;selectedTps=null;
 document.getElementById('statsSection').style.display='grid';
 document.getElementById('chartsSection').style.display='grid';
+document.getElementById('ageSection').style.display='block';
 document.getElementById('viewBar').style.display='none';
 document.getElementById('btnNextTps').style.display='none';
 document.getElementById('searchPanel').style.display='none';
