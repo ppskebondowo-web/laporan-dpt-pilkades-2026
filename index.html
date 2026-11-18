@@ -8,22 +8,23 @@
 <style>
 :root{--bg:#090d16;--card:#111827;--hover:#1a2438;--line:#1f2937;--cyan:#06b6d4;--blue:#3b82f6;--indigo:#6366f1;--rose:#f43f5e;--emerald:#10b981;--t1:#f8fafc;--t2:#94a3b8}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--t1);font-family:'Inter',sans-serif;line-height:1.5;min-height:100vh}
-.container{max-width:1360px;margin:0 auto;padding:2rem 1.25rem}
-header{text-align:center;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--line)}
-.badge{display:inline-block;padding:.3rem .9rem;background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.3);color:var(--cyan);border-radius:99px;font-size:.78rem;font-weight:600;text-transform:uppercase;margin-bottom:.6rem}
-h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700}
-header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.75rem}
-.scard{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.25rem;position:relative;overflow:hidden;transition:all .2s ease}
-.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+body{background:var(--bg);color:var(--t1);font-family:'Inter',sans-serif;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+.container{max-width:1360px;width:100%;margin:0 auto;padding:2.25rem 1.25rem;flex:1;display:flex;flex-direction:column}
+header{text-align:center;margin-bottom:2.25rem;padding-bottom:1.5rem;border-bottom:1px solid var(--line)}
+.badge{display:inline-block;padding:.35rem 1rem;background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.3);color:var(--cyan);border-radius:99px;font-size:.78rem;font-weight:600;text-transform:uppercase;margin-bottom:.65rem;letter-spacing:.05em}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.85rem,4vw,2.6rem);font-weight:700}
+header p{color:var(--t2);margin-top:.4rem;font-size:1.05rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:1.25rem;margin-bottom:2rem}
+.scard{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:1.85rem 1.5rem;min-height:230px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;transition:all .2s ease}
+.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
 .s1::before{background:var(--blue)}.s2::before{background:var(--cyan)}.s3::before{background:var(--rose)}.s4::before{background:var(--emerald)}.s5::before{background:var(--indigo)}
 .scard.clickable{cursor:pointer}
-.scard.clickable:hover{background:var(--hover);transform:translateY(-2px);border-color:#475569}
-.stitle{font-size:.8rem;font-weight:600;color:var(--t2);text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
-.click-hint{font-size:.68rem;padding:.15rem .45rem;border-radius:5px;background:rgba(255,255,255,.08);color:var(--t1);font-weight:500}
-.sval{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;margin:.2rem 0}
-.sdesc{font-size:.83rem;color:var(--t2)}
+.scard.clickable:hover{background:var(--hover);transform:translateY(-3px);border-color:#475569}
+.stitle{font-size:.82rem;font-weight:600;color:var(--t2);text-transform:uppercase;display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;letter-spacing:.03em}
+.icon-search{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.08);color:var(--t1);flex-shrink:0;transition:.2s}
+.scard.clickable:hover .icon-search{background:var(--indigo);color:#fff}
+.sval{font-family:'Space Grotesk',sans-serif;font-size:2.35rem;font-weight:700;margin:.75rem 0}
+.sdesc{font-size:.9rem;color:var(--t2);line-height:1.65;border-top:1px solid var(--line);padding-top:.85rem}
 .view-bar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.15rem 1.35rem;margin-bottom:1.5rem;display:none;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .view-info h2{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700}
 .view-info p{font-size:.88rem;color:var(--t2);margin-top:.15rem}
@@ -39,14 +40,14 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 .g-btn.active{background:var(--indigo);color:#fff}
 .summary{margin-bottom:1rem;color:var(--t2);font-size:.92rem;font-weight:500;display:none}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.15rem}
-.tps-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.35rem;cursor:pointer;transition:all .2s ease;position:relative;overflow:hidden}
+.tps-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.45rem;cursor:pointer;transition:all .2s ease;position:relative;overflow:hidden}
 .tps-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--indigo),var(--cyan))}
 .tps-card:hover{background:var(--hover);border-color:var(--indigo);transform:translateY(-2px)}
 .tps-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
 .tps-title{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700;color:var(--t1)}
-.tps-total{font-family:'Space Grotesk',sans-serif;font-size:2.1rem;font-weight:700;color:var(--cyan);margin-bottom:.45rem}
+.tps-total{font-family:'Space Grotesk',sans-serif;font-size:2.1rem;font-weight:700;color:var(--cyan);margin-bottom:.55rem}
 .tps-total span{font-family:'Inter',sans-serif;font-size:.85rem;font-weight:500;color:var(--t2)}
-.tps-split{display:flex;gap:1rem;font-size:.88rem;color:var(--t2);border-top:1px solid var(--line);padding-top:.65rem}
+.tps-split{display:flex;flex-direction:column;gap:.25rem;font-size:.88rem;color:var(--t2);border-top:1px solid var(--line);padding-top:.7rem}
 .vcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.25rem;display:flex;flex-direction:column;gap:.75rem}
 .vcard:hover{background:var(--hover);border-color:#334155}
 .vhdr{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;border-bottom:1px solid var(--line);padding-bottom:.65rem}
@@ -61,6 +62,7 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 .more{text-align:center;margin-top:2rem;display:none}
 .more button{background:linear-gradient(135deg,var(--indigo),var(--blue));color:#fff;border:none;padding:.8rem 1.8rem;border-radius:10px;font-weight:600;cursor:pointer}
 .empty{text-align:center;padding:2.5rem 1rem;color:var(--t2);grid-column:1/-1;background:var(--card);border-radius:14px;border:1px dashed var(--line)}
+footer{text-align:center;padding:1.5rem 1rem;margin-top:auto;border-top:1px solid var(--line);color:var(--t2);font-size:.82rem;font-weight:600;letter-spacing:.08em}
 </style>
 </head>
 <body>
@@ -73,29 +75,29 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 
 <section class="stats" id="statsSection">
 <div class="scard s1">
-<div class="stitle">Cakupan Wilayah</div>
+<div class="stitle"><span>Cakupan Wilayah</span></div>
 <div class="sval">11 TPS Aktif</div>
-<div class="sdesc">TPS 001 s.d. TPS 011 Desa Kebondowo</div>
+<div class="sdesc">TPS 001 s.d. TPS 011<br>Desa Kebondowo</div>
 </div>
 <div class="scard s2">
-<div class="stitle">Total DPS Awal</div>
+<div class="stitle"><span>Total DPS Awal</span></div>
 <div class="sval" id="c-dps">0</div>
-<div class="sdesc" id="g-dps">Laki-laki: 0 &bull; Perempuan: 0</div>
+<div class="sdesc" id="g-dps">0 Laki-laki<br>0 Perempuan</div>
 </div>
 <div class="scard s3 clickable" onclick="openView('tms')">
-<div class="stitle"><span>Pemilih TMS</span><span class="click-hint">Buka Daftar</span></div>
+<div class="stitle"><span>Pemilih TMS</span><span class="icon-search" title="Lihat Daftar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span></div>
 <div class="sval" id="c-tms">0</div>
-<div class="sdesc" id="g-tms">Laki-laki: 0 &bull; Perempuan: 0</div>
+<div class="sdesc" id="g-tms">0 Laki-laki<br>0 Perempuan</div>
 </div>
 <div class="scard s4 clickable" onclick="openView('baru')">
-<div class="stitle"><span>Pemilih Baru (Usulan)</span><span class="click-hint">Buka Daftar</span></div>
+<div class="stitle"><span>Pemilih Baru (Usulan)</span><span class="icon-search" title="Lihat Daftar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span></div>
 <div class="sval" id="c-baru">0</div>
-<div class="sdesc" id="g-baru">Laki-laki: 0 &bull; Perempuan: 0</div>
+<div class="sdesc" id="g-baru">0 Laki-laki<br>0 Perempuan</div>
 </div>
 <div class="scard s5 clickable" onclick="openView('rekap')">
-<div class="stitle"><span>Total DPT Akhir</span><span class="click-hint">Rekap TPS</span></div>
+<div class="stitle"><span>Total DPT Akhir</span><span class="icon-search" title="Lihat Rekap TPS"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span></div>
 <div class="sval" id="c-akhir">0</div>
-<div class="sdesc" id="g-akhir">Laki-laki: 0 &bull; Perempuan: 0</div>
+<div class="sdesc" id="g-akhir">0 Laki-laki<br>0 Perempuan</div>
 </div>
 </section>
 
@@ -121,6 +123,9 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 <main class="grid" id="cards"></main>
 <div class="more" id="more"><button onclick="limit+=30;draw()">Tampilkan Lebih Banyak Data</button></div>
 </div>
+
+<footer>&copy; PANITIA PILKADES KEBONDOWO 2026</footer>
+
 <script>
 let db={dpt:[],baru:[],tms:[]},view=null,selectedTps=null,gender='ALL',list=[],limit=30,statInfo={},tpsSummary=[];
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -157,25 +162,25 @@ loadFiles(['data_baru.csv','data baru.csv','Data_Baru.csv','DATA_BARU.csv']),
 loadFiles(['data_tms.csv','data tms.csv','Data_Tms.csv','DATA_TMS.csv'])
 ]);
 db.dpt=tpsAll.flat();
-tpsSummary.sort((x, y) => x.tps.localeCompare(y.tps));
+tpsSummary.sort((x,y)=>x.tps.localeCompare(y.tps));
 db.baru=rawB.map(r=>({nama:r.nama||'',jk:jk(r.jenis_kelamin||r.jnsklmn),umur:r.umur||r.usia||'-',alamat:r.alamat||'-',tps:normTps(r.tps)})).filter(x=>x.nama);
 db.tms=rawT.map(r=>({no:r.no||'-',nkk:r.nkk||'-',nik:r.nik||'-',nama:r.nama||'',jk:jk(r.jenis_kelamin||r.jnsklmn),umur:r.umur||r.usia||'-',alamat:r.alamat||'-',tps:normTps(r.tps),ket:r.keterangan_tms||r.keterangan||'-'})).filter(x=>x.nama);
 
 const a=stat(db.dpt),b=stat(db.tms),c=stat(db.baru);
 const dpsT=a.t+b.t-c.t,dpsL=a.l+b.l-c.l,dpsP=a.p+b.p-c.p;
 statInfo={
-tms:`Total ${b.t.toLocaleString('id-ID')} Pemilih • Laki-laki: ${b.l.toLocaleString('id-ID')} • Perempuan: ${b.p.toLocaleString('id-ID')}`,
-baru:`Total ${c.t.toLocaleString('id-ID')} Pemilih • Laki-laki: ${c.l.toLocaleString('id-ID')} • Perempuan: ${c.p.toLocaleString('id-ID')}`,
-rekap:`Total ${a.t.toLocaleString('id-ID')} Pemilih • Laki-laki: ${a.l.toLocaleString('id-ID')} • Perempuan: ${a.p.toLocaleString('id-ID')}`
+tms:`Total ${b.t.toLocaleString('id-ID')} Pemilih • ${b.l.toLocaleString('id-ID')} Laki-laki • ${b.p.toLocaleString('id-ID')} Perempuan`,
+baru:`Total ${c.t.toLocaleString('id-ID')} Pemilih • ${c.l.toLocaleString('id-ID')} Laki-laki • ${c.p.toLocaleString('id-ID')} Perempuan`,
+rekap:`Total ${a.t.toLocaleString('id-ID')} Pemilih • ${a.l.toLocaleString('id-ID')} Laki-laki • ${a.p.toLocaleString('id-ID')} Perempuan`
 };
 document.getElementById('c-dps').textContent=dpsT.toLocaleString('id-ID');
-document.getElementById('g-dps').textContent=`Laki-laki: ${dpsL.toLocaleString('id-ID')} • Perempuan: ${dpsP.toLocaleString('id-ID')}`;
+document.getElementById('g-dps').innerHTML=`${dpsL.toLocaleString('id-ID')} Laki-laki<br>${dpsP.toLocaleString('id-ID')} Perempuan`;
 document.getElementById('c-tms').textContent=b.t.toLocaleString('id-ID');
-document.getElementById('g-tms').textContent=`Laki-laki: ${b.l.toLocaleString('id-ID')} • Perempuan: ${b.p.toLocaleString('id-ID')}`;
+document.getElementById('g-tms').innerHTML=`${b.l.toLocaleString('id-ID')} Laki-laki<br>${b.p.toLocaleString('id-ID')} Perempuan`;
 document.getElementById('c-baru').textContent=c.t.toLocaleString('id-ID');
-document.getElementById('g-baru').textContent=`Laki-laki: ${c.l.toLocaleString('id-ID')} • Perempuan: ${c.p.toLocaleString('id-ID')}`;
+document.getElementById('g-baru').innerHTML=`${c.l.toLocaleString('id-ID')} Laki-laki<br>${c.p.toLocaleString('id-ID')} Perempuan`;
 document.getElementById('c-akhir').textContent=a.t.toLocaleString('id-ID');
-document.getElementById('g-akhir').textContent=`Laki-laki: ${a.l.toLocaleString('id-ID')} • Perempuan: ${a.p.toLocaleString('id-ID')}`;
+document.getElementById('g-akhir').innerHTML=`${a.l.toLocaleString('id-ID')} Laki-laki<br>${a.p.toLocaleString('id-ID')} Perempuan`;
 }
 
 function openView(v){
@@ -192,9 +197,9 @@ document.getElementById('viewSub').textContent=statInfo.rekap+' • Klik kartu T
 document.getElementById('summary').style.display='none';
 document.getElementById('cards').innerHTML=tpsSummary.map(t=>`
 <article class="tps-card" onclick="openTps('${t.tps}')">
-<div class="tps-top"><span class="tps-title">${t.tps}</span><span class="click-hint">Lihat Pemilih &rarr;</span></div>
+<div class="tps-top"><span class="tps-title">${t.tps}</span><span class="icon-search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span></div>
 <div class="tps-total">${t.total.toLocaleString('id-ID')} <span>Pemilih</span></div>
-<div class="tps-split"><span>Laki-laki: <strong>${t.l.toLocaleString('id-ID')}</strong></span><span>Perempuan: <strong>${t.p.toLocaleString('id-ID')}</strong></span></div>
+<div class="tps-split"><span><strong>${t.l.toLocaleString('id-ID')}</strong> Laki-laki</span><span><strong>${t.p.toLocaleString('id-ID')}</strong> Perempuan</span></div>
 </article>`).join('');
 }else{
 const titles={tms:'Pemilih TMS (Tidak Memenuhi Syarat)',baru:'Pemilih Baru (Usulan Masyarakat)'};
@@ -213,7 +218,7 @@ document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('active'));
 document.getElementById('g-ALL').classList.add('active');
 const info=tpsSummary.find(x=>x.tps===tpsName)||{total:0,l:0,p:0};
 document.getElementById('viewTitle').textContent=`Daftar Pemilih Tetap — ${tpsName}`;
-document.getElementById('viewSub').textContent=`Total ${info.total.toLocaleString('id-ID')} Pemilih • Laki-laki: ${info.l.toLocaleString('id-ID')} • Perempuan: ${info.p.toLocaleString('id-ID')}`;
+document.getElementById('viewSub').textContent=`Total ${info.total.toLocaleString('id-ID')} Pemilih • ${info.l.toLocaleString('id-ID')} Laki-laki • ${info.p.toLocaleString('id-ID')} Perempuan`;
 document.getElementById('btnBack').innerHTML='&larr; Kembali ke Rekap TPS';
 document.getElementById('searchPanel').style.display='block';
 document.getElementById('summary').style.display='block';
