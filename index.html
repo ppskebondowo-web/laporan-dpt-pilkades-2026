@@ -66,6 +66,23 @@ header p{color:var(--t2);margin-top:.4rem;font-size:1.05rem}
 .more button{background:linear-gradient(135deg,var(--indigo),var(--blue));color:#fff;border:none;padding:.8rem 1.8rem;border-radius:10px;font-weight:600;cursor:pointer}
 .empty{text-align:center;padding:2.5rem 1rem;color:var(--t2);grid-column:1/-1;background:var(--card);border-radius:14px;border:1px dashed var(--line)}
 footer{text-align:center;padding:1.5rem 1rem;margin-top:auto;border-top:1px solid var(--line);color:var(--t2);font-size:.82rem;font-weight:600;letter-spacing:.08em}
+.charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;margin-bottom:2rem}
+@media(max-width:900px){.charts-grid{grid-template-columns:1fr}}
+.chart-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.5rem}
+.chart-hdr{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem;border-bottom:1px solid var(--line);padding-bottom:.75rem}
+.chart-hdr h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700}
+.legend{display:flex;gap:1rem;font-size:.8rem;color:var(--t2)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:.35rem}
+.bar-list{display:flex;flex-direction:column;gap:.75rem}
+.bar-row{display:grid;grid-template-columns:72px 1fr 65px;align-items:center;gap:.75rem;font-size:.84rem}
+.bar-lbl{font-weight:700;color:var(--t1)}
+.bar-track{height:14px;background:var(--bg);border-radius:7px;overflow:hidden;display:flex}
+.bar-l{background:linear-gradient(90deg,#3b82f6,#06b6d4);height:100%;transition:width .5s}
+.bar-p{background:linear-gradient(90deg,#ec4899,#f43f5e);height:100%;transition:width .5s}
+.bar-val{text-align:right;font-weight:600;color:var(--t2)}
+.donut-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;padding-top:.5rem}
+.donut-info{width:100%;display:flex;flex-direction:column;gap:.65rem;font-size:.88rem}
+.d-item{display:flex;justify-content:space-between;padding:.55rem .8rem;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -101,6 +118,25 @@ footer{text-align:center;padding:1.5rem 1rem;margin-top:auto;border-top:1px soli
 <div class="stitle"><span>Total DPT Akhir</span><span class="icon-search" title="Lihat Rekap TPS"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span></div>
 <div class="sval" id="c-akhir">0</div>
 <div class="sdesc" id="g-akhir">0 Laki-laki<br>0 Perempuan</div>
+</div>
+</section>
+
+<section class="charts-grid" id="chartsSection">
+<div class="chart-card">
+<div class="chart-hdr">
+<h3>Perbandingan Pemilih per TPS (DPT Akhir)</h3>
+<div class="legend">
+<span><i class="dot" style="background:#06b6d4"></i>Laki-laki</span>
+<span><i class="dot" style="background:#f43f5e"></i>Perempuan</span>
+</div>
+</div>
+<div class="bar-list" id="tpsBarChart"></div>
+</div>
+<div class="chart-card">
+<div class="chart-hdr">
+<h3>Proporsi Gender Desa</h3>
+</div>
+<div class="donut-wrap" id="genderDonutChart"></div>
 </div>
 </section>
 
