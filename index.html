@@ -157,6 +157,7 @@ loadFiles(['data_baru.csv','data baru.csv','Data_Baru.csv','DATA_BARU.csv']),
 loadFiles(['data_tms.csv','data tms.csv','Data_Tms.csv','DATA_TMS.csv'])
 ]);
 db.dpt=tpsAll.flat();
+tpsSummary.sort((x, y) => x.tps.localeCompare(y.tps));
 db.baru=rawB.map(r=>({nama:r.nama||'',jk:jk(r.jenis_kelamin||r.jnsklmn),umur:r.umur||r.usia||'-',alamat:r.alamat||'-',tps:normTps(r.tps)})).filter(x=>x.nama);
 db.tms=rawT.map(r=>({no:r.no||'-',nkk:r.nkk||'-',nik:r.nik||'-',nama:r.nama||'',jk:jk(r.jenis_kelamin||r.jnsklmn),umur:r.umur||r.usia||'-',alamat:r.alamat||'-',tps:normTps(r.tps),ket:r.keterangan_tms||r.keterangan||'-'})).filter(x=>x.nama);
 
