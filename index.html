@@ -195,6 +195,13 @@
         return '';
     }
 
+    function formatJK(raw) {
+        const g = (raw || '').trim().toUpperCase();
+        if (g === 'L' || g.startsWith('LAKI')) return 'Laki-laki';
+        if (g === 'P' || g.startsWith('PEREMPUAN')) return 'Perempuan';
+        return raw || '-';
+    }
+
     function normalizeTPS(rawTps) {
         if (!rawTps) return "Tidak Diketahui";
         const clean = rawTps.toString().trim().toUpperCase();
@@ -205,9 +212,8 @@
     function countGender(list) {
         let l = 0, p = 0;
         list.forEach(item => {
-            const g = (item.jk || '').toUpperCase();
-            if (g === 'L' || g.startsWith('LAKI')) l++;
-            else if (g === 'P' || g.startsWith('PEREMPUAN')) p++;
+            if (item.jk === 'Laki-laki') l++;
+            else if (item.jk === 'Perempuan') p++;
         });
         return { l, p, total: list.length };
     }
@@ -219,7 +225,7 @@
             return rows.map(r => ({
                 id: getCol(r, ['id']) || '-',
                 nama: getCol(r, ['nama']),
-                jk: getCol(r, ['jnsklmn', 'jenis_kelamin', 'jk']) || '-',
+                jk: formatJK(getCol(r, ['jnsklmn', 'jenis_kelamin', 'jk'])),
                 usia: getCol(r, ['usia', 'umur']) || '-',
                 alamat: getCol(r, ['alamat']) || '-',
                 tps: "TPS " + num
@@ -233,7 +239,7 @@
         state.dpt = tpsRes.flat().filter(x => x.nama !== '');
         state.baru = rawBaru.map(r => ({
             nama: getCol(r, ['nama']),
-            jk: getCol(r, ['jenis_kelamin', 'jnsklmn', 'jk']) || '-',
+            jk: formatJK(getCol(r, ['jenis_kelamin', 'jnsklmn', 'jk'])),
             umur: getCol(r, ['umur', 'usia']) || '-',
             alamat: getCol(r, ['alamat']) || '-',
             tps: normalizeTPS(getCol(r, ['tps']))
@@ -244,7 +250,7 @@
             nkk: getCol(r, ['nkk']) || '-',
             nik: getCol(r, ['nik']) || '-',
             nama: getCol(r, ['nama']),
-            jk: getCol(r, ['jenis_kelamin', 'jnsklmn', 'jk']) || '-',
+            jk: formatJK(getCol(r, ['jenis_kelamin', 'jnsklmn', 'jk'])),
             umur: getCol(r, ['umur', 'usia']) || '-',
             alamat: getCol(r, ['alamat']) || '-',
             tps: normalizeTPS(getCol(r, ['tps'])),
@@ -287,8 +293,8 @@
         const visible = state.filteredData.slice(0, state.displayLimit);
         document.getElementById('resultSummary').textContent = "Menampilkan " + visible.length.toLocaleString('id-ID') + " dari " + total.toLocaleString('id-ID') + " data pemilih";
         if (total === 0) {
-            const errInfo = state.errors.length > 0 ? "<br><small style='color:#fda4af'>File tidak ditemukan / diblokir browser: " + state.errors.join(', ') + "</small>" : "";
-            container.innerHTML = '<div class="status-message">Tidak ada data pemilih yang ditemukan.' + errInfo + '</div>';
+            const errInfo = state.errors.length > 0 ? "<br><small style='color:#fda4af'>File gagal dimuat: " + state.errors.join(', ') + "</small>" : "";
+            container.innerHTML = '<div class="status-message">Tidak ada data pemilih yang cocok.' + errInfo + '</div>';
             document.getElementById('loadMoreContainer').style.display = 'none';
             return;
         }
