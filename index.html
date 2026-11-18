@@ -19,20 +19,22 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 .scard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
 .s1::before{background:var(--blue)}.s2::before{background:var(--cyan)}.s3::before{background:var(--rose)}.s4::before{background:var(--emerald)}.s5::before{background:var(--indigo)}
 .scard.clickable{cursor:pointer}
-.scard.clickable:hover{background:var(--hover);transform:translateY(-2px)}
-.scard.active-tms{border-color:var(--rose);background:rgba(244,63,94,.08);box-shadow:0 4px 20px rgba(244,63,94,.2)}
-.scard.active-baru{border-color:var(--emerald);background:rgba(16,185,129,.08);box-shadow:0 4px 20px rgba(16,185,129,.2)}
-.scard.active-dpt{border-color:var(--indigo);background:rgba(99,102,241,.1);box-shadow:0 4px 20px rgba(99,102,241,.25)}
+.scard.clickable:hover{background:var(--hover);transform:translateY(-2px);border-color:#475569}
 .stitle{font-size:.8rem;font-weight:600;color:var(--t2);text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
-.click-hint{font-size:.68rem;padding:.15rem .45rem;border-radius:5px;background:rgba(255,255,255,.07);color:var(--t1);font-weight:500}
+.click-hint{font-size:.68rem;padding:.15rem .45rem;border-radius:5px;background:rgba(255,255,255,.08);color:var(--t1);font-weight:500}
 .sval{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;margin:.2rem 0}
 .sdesc{font-size:.83rem;color:var(--t2)}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.15rem;margin-bottom:1.5rem}
+.view-bar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.15rem 1.35rem;margin-bottom:1.5rem;display:none;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.view-info h2{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700}
+.view-info p{font-size:.88rem;color:var(--t2);margin-top:.15rem}
+.btn-back{background:rgba(255,255,255,.07);border:1px solid #334155;color:var(--t1);padding:.65rem 1.15rem;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;transition:.2s}
+.btn-back:hover{background:rgba(255,255,255,.14)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.15rem;margin-bottom:1.5rem;display:none}
 .filters{display:grid;grid-template-columns:2fr 1fr;gap:.85rem}
 @media(max-width:768px){.filters{grid-template-columns:1fr}}
 .filters input,.filters select{width:100%;background:var(--bg);border:1px solid #334155;color:var(--t1);padding:.75rem 1rem;border-radius:10px;font-size:.95rem;outline:none}
 .filters input:focus,.filters select:focus{border-color:var(--indigo)}
-.summary{margin-bottom:1rem;color:var(--t2);font-size:.92rem;font-weight:500}
+.summary{margin-bottom:1rem;color:var(--t2);font-size:.92rem;font-weight:500;display:none}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.15rem}
 .vcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.25rem;display:flex;flex-direction:column;gap:.75rem}
 .vcard:hover{background:var(--hover);border-color:#334155}
@@ -45,7 +47,7 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 .val{font-weight:500;text-align:right;word-break:break-word}
 .mono{font-family:monospace;color:#e2e8f0}
 .tms-box{margin-top:.35rem;padding:.6rem .8rem;background:rgba(244,63,94,.12);border-left:3px solid var(--rose);border-radius:6px;font-size:.86rem;color:#fda4af}
-.more{text-align:center;margin-top:2rem}
+.more{text-align:center;margin-top:2rem;display:none}
 .more button{background:linear-gradient(135deg,var(--indigo),var(--blue));color:#fff;border:none;padding:.8rem 1.8rem;border-radius:10px;font-weight:600;cursor:pointer}
 .empty{text-align:center;padding:2.5rem 1rem;color:var(--t2);grid-column:1/-1;background:var(--card);border-radius:14px;border:1px dashed var(--line)}
 </style>
@@ -57,7 +59,8 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 <h1>Perkembangan Daftar Pemilih</h1>
 <p>Pemilihan Kepala Desa Kebondowo Tahun 2026 &bull; Kecamatan Banyubiru</p>
 </header>
-<section class="stats">
+
+<section class="stats" id="statsSection">
 <div class="scard s1">
 <div class="stitle">Cakupan Wilayah</div>
 <div class="sval">11 TPS Aktif</div>
@@ -68,23 +71,32 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 <div class="sval" id="c-dps">0</div>
 <div class="sdesc" id="g-dps">Laki-laki: 0 &bull; Perempuan: 0</div>
 </div>
-<div id="card-tms" class="scard s3 clickable" onclick="setTab('tms')">
-<div class="stitle"><span>Pemilih TMS</span><span class="click-hint">Klik Lihat</span></div>
+<div class="scard s3 clickable" onclick="openView('tms')">
+<div class="stitle"><span>Pemilih TMS</span><span class="click-hint">Buka Daftar</span></div>
 <div class="sval" id="c-tms">0</div>
 <div class="sdesc" id="g-tms">Laki-laki: 0 &bull; Perempuan: 0</div>
 </div>
-<div id="card-baru" class="scard s4 clickable" onclick="setTab('baru')">
-<div class="stitle"><span>Pemilih Baru (Usulan)</span><span class="click-hint">Klik Lihat</span></div>
+<div class="scard s4 clickable" onclick="openView('baru')">
+<div class="stitle"><span>Pemilih Baru (Usulan)</span><span class="click-hint">Buka Daftar</span></div>
 <div class="sval" id="c-baru">0</div>
 <div class="sdesc" id="g-baru">Laki-laki: 0 &bull; Perempuan: 0</div>
 </div>
-<div id="card-dpt" class="scard s5 clickable active-dpt" onclick="setTab('dpt')">
-<div class="stitle"><span>Total DPT Akhir</span><span class="click-hint">Klik Lihat</span></div>
+<div class="scard s5 clickable" onclick="openView('dpt')">
+<div class="stitle"><span>Total DPT Akhir</span><span class="click-hint">Buka Daftar</span></div>
 <div class="sval" id="c-akhir">0</div>
 <div class="sdesc" id="g-akhir">Laki-laki: 0 &bull; Perempuan: 0</div>
 </div>
 </section>
-<section class="panel">
+
+<section class="view-bar" id="viewBar">
+<div class="view-info">
+<h2 id="viewTitle">Judul Kategori</h2>
+<p id="viewSub">Keterangan kategori</p>
+</div>
+<button class="btn-back" onclick="backToHome()">&larr; Kembali ke Ringkasan</button>
+</section>
+
+<section class="panel" id="searchPanel">
 <div class="filters">
 <input type="text" id="q" placeholder="Cari berdasarkan nama pemilih..." oninput="filterData()">
 <select id="tps" onchange="filterData()">
@@ -96,12 +108,12 @@ header p{color:var(--t2);margin-top:.35rem;font-size:1rem}
 </select>
 </div>
 </section>
-<div class="summary" id="summary">Memuat data pemilih...</div>
-<main class="grid" id="cards"><div class="empty">Sedang membaca file CSV...</div></main>
-<div class="more" id="more" style="display:none"><button onclick="limit+=30;draw()">Tampilkan Lebih Banyak Data</button></div>
+<div class="summary" id="summary"></div>
+<main class="grid" id="cards"></main>
+<div class="more" id="more"><button onclick="limit+=30;draw()">Tampilkan Lebih Banyak Data</button></div>
 </div>
 <script>
-let db={dpt:[],baru:[],tms:[]},tab='dpt',list=[],limit=30;
+let db={dpt:[],baru:[],tms:[]},tab=null,list=[],limit=30,statInfo={};
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const jk=v=>{const g=String(v||'').trim().toUpperCase();return(g==='L'||g.startsWith('LAKI'))?'Laki-laki':(g==='P'||g.startsWith('PEREMPUAN'))?'Perempuan':(v||'-');};
 const normTps=v=>{const m=String(v||'').match(/\d+/);return m?'TPS '+m.at(0).padStart(3,'0'):'TPS -';};
@@ -138,6 +150,11 @@ db.tms=rawT.map(r=>({no:r.no||'-',nkk:r.nkk||'-',nik:r.nik||'-',nama:r.nama||'',
 
 const a=stat(db.dpt),b=stat(db.tms),c=stat(db.baru);
 const dpsT=a.t+b.t-c.t,dpsL=a.l+b.l-c.l,dpsP=a.p+b.p-c.p;
+statInfo={
+tms:`Total ${b.t.toLocaleString('id-ID')} Pemilih • Laki-laki: ${b.l.toLocaleString('id-ID')} • Perempuan: ${b.p.toLocaleString('id-ID')}`,
+baru:`Total ${c.t.toLocaleString('id-ID')} Pemilih • Laki-laki: ${c.l.toLocaleString('id-ID')} • Perempuan: ${c.p.toLocaleString('id-ID')}`,
+dpt:`Total ${a.t.toLocaleString('id-ID')} Pemilih • Laki-laki: ${a.l.toLocaleString('id-ID')} • Perempuan: ${a.p.toLocaleString('id-ID')}`
+};
 document.getElementById('c-dps').textContent=dpsT.toLocaleString('id-ID');
 document.getElementById('g-dps').textContent=`Laki-laki: ${dpsL.toLocaleString('id-ID')} • Perempuan: ${dpsP.toLocaleString('id-ID')}`;
 document.getElementById('c-tms').textContent=b.t.toLocaleString('id-ID');
@@ -146,27 +163,44 @@ document.getElementById('c-baru').textContent=c.t.toLocaleString('id-ID');
 document.getElementById('g-baru').textContent=`Laki-laki: ${c.l.toLocaleString('id-ID')} • Perempuan: ${c.p.toLocaleString('id-ID')}`;
 document.getElementById('c-akhir').textContent=a.t.toLocaleString('id-ID');
 document.getElementById('g-akhir').textContent=`Laki-laki: ${a.l.toLocaleString('id-ID')} • Perempuan: ${a.p.toLocaleString('id-ID')}`;
-filterData();
 }
 
-function setTab(t){
+function openView(t){
 tab=t;limit=30;
-document.getElementById('card-tms').classList.remove('active-tms');
-document.getElementById('card-baru').classList.remove('active-baru');
-document.getElementById('card-dpt').classList.remove('active-dpt');
-document.getElementById('card-'+t).classList.add('active-'+t);
+document.getElementById('q').value='';
+document.getElementById('tps').value='ALL';
+document.getElementById('statsSection').style.display='none';
+document.getElementById('viewBar').style.display='flex';
+document.getElementById('searchPanel').style.display=(t==='dpt')?'block':'none';
+document.getElementById('summary').style.display='block';
+const titles={tms:'Pemilih TMS (Tidak Memenuhi Syarat)',baru:'Pemilih Baru (Usulan Masyarakat)',dpt:'Total DPT Akhir (11 TPS Desa Kebondowo)'};
+document.getElementById('viewTitle').textContent=titles[t];
+document.getElementById('viewSub').textContent=statInfo[t]||'';
 filterData();
+window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function backToHome(){
+tab=null;
+document.getElementById('statsSection').style.display='grid';
+document.getElementById('viewBar').style.display='none';
+document.getElementById('searchPanel').style.display='none';
+document.getElementById('summary').style.display='none';
+document.getElementById('cards').innerHTML='';
+document.getElementById('more').style.display='none';
 }
 
 function filterData(){
-const q=document.getElementById('q').value.toLowerCase().trim(),t=document.getElementById('tps').value;
-list=db[tab].filter(x=>x.nama.toLowerCase().includes(q)&&(t==='ALL'||x.tps===t));limit=30;draw();
+if(!tab)return;
+const q=(tab==='dpt')?document.getElementById('q').value.toLowerCase().trim():'';
+const t=(tab==='dpt')?document.getElementById('tps').value:'ALL';
+list=db[tab].filter(x=>x.nama.toLowerCase().includes(q)&&(t==='ALL'||x.tps===t));
+limit=30;draw();
 }
 
 function draw(){
 const box=document.getElementById('cards'),vis=list.slice(0,limit);
-const judul={dpt:'Daftar Pemilih Tetap (DPT Akhir)',tms:'Pemilih TMS (Lengkap)',baru:'Pemilih Baru (Usulan Masyarakat)'}[tab];
-document.getElementById('summary').textContent=`[${judul}] Menampilkan ${vis.length.toLocaleString('id-ID')} dari ${list.length.toLocaleString('id-ID')} data pemilih`;
+document.getElementById('summary').textContent=`Menampilkan ${vis.length.toLocaleString('id-ID')} dari ${list.length.toLocaleString('id-ID')} data pemilih`;
 if(!list.length){box.innerHTML='<div class="empty">Tidak ada data pemilih ditemukan.</div>';document.getElementById('more').style.display='none';return;}
 const r=(k,v,m='')=>`<div class="row"><span class="lbl">${k}</span><span class="val ${m}">${esc(v)}</span></div>`;
 box.innerHTML=vis.map(x=>{
