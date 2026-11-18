@@ -178,12 +178,13 @@
         const cleanText = text.replace(/^\uFEFF/, '');
         const lines = cleanText.split(/\r?\n/).filter(l => l.trim() !== '');
         if (lines.length < 2) return [];
-        const sep = lines[0].includes(';') ? ';' : ',';
-        const headers = lines[0].split(sep).map(h => h.trim().toLowerCase());
+        const firstLine = lines.at(0);
+        const sep = firstLine.includes(';') ? ';' : ',';
+        const headers = firstLine.split(sep).map(h => h.trim().toLowerCase());
         return lines.slice(1).map(line => {
             const cols = line.split(sep);
             const obj = {};
-            headers.forEach((h, idx) => { obj[h] = (cols[idx] || '').trim(); });
+            headers.forEach((h, idx) => { obj[h] = (cols.at(idx) || '').trim(); });
             return obj;
         });
     }
@@ -199,9 +200,10 @@
                 }
             } catch (e) {}
         }
-        state.logs.push(candidates[0]);
+        state.logs.push(candidates.at(0));
         return [];
     }
+
 
     function getCol(row, keys) {
         for (let k of keys) {
